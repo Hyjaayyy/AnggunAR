@@ -1,5 +1,7 @@
 # Anggun AR Sukses Abadi
 
+Phase 3 katalog/detail paket telah ditambahkan. Panduan data bilingual, itinerary, tiga foto lokal, draft preview development dan publikasi: [docs/TOUR_PACKAGES.md](docs/TOUR_PACKAGES.md). Belum ada paket resmi published; production menampilkan empty state, bukan contoh DEMO. Tidak ada backend booking atau deployment.
+
 Website travel dengan Next.js App Router, TypeScript, Tailwind CSS, ESLint, dan Lucide React. Phase 2 menambahkan homepage Modern Tropical + Premium bilingual, design system, header/footer, dan navigasi mobile. Informasi layanan masih sementara; tidak menerima booking.
 
 ## Prasyarat dan instalasi
@@ -35,6 +37,7 @@ Dengan server production lokal berjalan, jalankan `node scripts/verify-routes.mj
 - Pemilih bahasa mempertahankan slug halaman. Query dan hash tidak dipertahankan; Phase 1 belum menggunakan keduanya untuk konten.
 - Kamus terjemahan: `src/i18n/dictionaries.ts`. Tipe kamus memastikan kedua bahasa memiliki key yang sama.
 - Kamus homepage dan navigasi Phase 2: `src/i18n/home.ts`. Gambar konsep lokal: `public/images/placeholders` (bukan foto lokasi).
+- Hero memakai carousel tiga slide: konten ID/EN di `src/i18n/hero.ts`, konfigurasi gambar/link/focal point di `src/data/hero-slides.ts`. Petunjuk foto: `public/images/hero/README.md`. Saat ini seluruh foto `null`, sehingga gradient placeholder ditampilkan tanpa request gambar yang hilang.
 - Identitas bisnis: `src/lib/business.ts`. Nilai `null` berarti belum diberikan pemilik bisnis; jangan diisi dengan data rekaan.
 - Metadata menggunakan Metadata API. Semua halaman masih `noindex, nofollow` karena konten sementara. Canonical, sitemap XML, dan domain produksi ditambahkan setelah domain dan konten disetujui.
 
@@ -74,4 +77,16 @@ Lihat `PROJECT.md`, `docs/ARCHITECTURE.md`, `docs/ROADMAP.md`, dan `docs/SITEMAP
 
 ## Catatan Git pada environment awal
 
-Repository diinisialisasi oleh akun sandbox Windows. Jika akun Windows Anda mendapat pesan `detected dubious ownership`, gunakan pengecualian khusus satu perintah: `git -c safe.directory=C:/AnggunAR status`. Konfigurasi Git global tidak diubah oleh proyek ini. Belum ada commit atau remote yang dibuat.
+Repository diinisialisasi oleh akun sandbox Windows. Jika akun Windows Anda mendapat pesan `detected dubious ownership`, gunakan pengecualian khusus satu perintah: `git -c safe.directory=C:/AnggunAR status`. Konfigurasi Git global tidak diubah oleh proyek ini. Baseline Phase 1/2 disimpan sebagai initial commit `bd950f8` sebelum refinement hero. Tidak ada push. Perubahan carousel dibiarkan di working tree untuk ditinjau.
+
+## About Us
+
+Buka http://localhost:3000/id/about atau http://localhost:3000/en/about. Halaman menggunakan route khusus, delapan section, konten resmi dari brief pemilik, dan dictionary `src/i18n/about.ts`. Konfigurasi visual terpisah: `src/data/about-visual.ts`; cara mengganti foto tersedia di `public/images/about/README.md`.
+
+Dengan server production dan Chrome CDP lokal aktif, jalankan `node scripts/verify-about-browser.mjs` untuk memeriksa kedua bahasa pada tujuh ukuran viewport, urutan section, misi/nilai, metadata, CTA, keyboard, dan language switcher. Screenshot/laporan berada di `artifacts/about`, diabaikan Git.
+
+## Hero carousel
+
+Navigasi Previous/Next, indikator, dan Pause/Play tersedia di bawah hero. Arrow Left/Right bekerja ketika fokus berada di carousel. Autoplay 7 detik berhenti selama hover, fokus, tab tidak aktif, pilihan Pause, atau reduced motion. Play mengaktifkan kembali izin autoplay; timer baru berjalan setelah hover/fokus meninggalkan carousel. Reduced motion selalu menonaktifkan autoplay dan fade, sementara navigasi manual tetap tersedia.
+
+Dengan server production dan browser CDP lokal aktif, jalankan `node scripts/verify-hero-browser.mjs` untuk layout, kontrol, autoplay real-time, pause, reduced motion, dan cleanup. Script memerlukan sekitar satu menit untuk menunggu interval nyata; `--layout-only` hanya memeriksa tiga slide pada tujuh ukuran viewport. Screenshot/laporan disimpan di `artifacts/hero` dan diabaikan Git. Test visibility memakai state/event simulasi; tidak menggantikan pengujian tab fisik atau perangkat nyata.

@@ -2,13 +2,12 @@ import type { Locale } from "./config";
 
 type SectionCopy = { eyebrow: string; title: string; description: string };
 type DestinationCopy = { name: string; category: string; description: string };
-type PackageCopy = { name: string; category: string; description: string };
 type HomeDictionary = {
   metaDescription: string;
   hero: { eyebrow: string; title: string; accent: string; description: string; primary: string; secondary: string; location: string; visualLabel: string; caption: string; scroll: string };
   introduction: SectionCopy & { link: string; note: string; sideTitle: string; sideDescription: string };
   destinations: SectionCopy & { all: string; link: string; items: [DestinationCopy, DestinationCopy, DestinationCopy] };
-  packages: SectionCopy & { all: string; status: string; price: string; link: string; items: [PackageCopy, PackageCopy, PackageCopy] };
+  packages: SectionCopy;
   benefits: SectionCopy & { items: { title: string; description: string }[] };
   inspiration: SectionCopy & { label: string; visualLabel: string; link: string; caption: string };
   final: SectionCopy & { primary: string; secondary: string; note: string };
@@ -45,12 +44,6 @@ const homeDictionaries: Record<Locale, HomeDictionary> = {
     packages: {
       eyebrow: "Rencana perjalanan", title: "Temukan gaya liburan Anda.",
       description: "Koleksi konsep untuk membantu membayangkan perjalanan berikutnya. Paket resmi, durasi, fasilitas, dan ketersediaan masih menunggu konfirmasi.",
-      all: "Lihat halaman paket", status: "Konsep paket", price: "Harga belum ditetapkan", link: "Tentang paket wisata",
-      items: [
-        { name: "Batam City Escape", category: "Kota & ikon", description: "Ide perjalanan untuk mengenal sisi kota dan ikon Batam." },
-        { name: "Coastal Slow Days", category: "Pantai & suasana", description: "Inspirasi menikmati pesisir dengan tempo yang lebih santai." },
-        { name: "Island Perspectives", category: "Pulau & bahari", description: "Gambaran perjalanan dengan kepulauan sebagai titik awal." },
-      ],
     },
     benefits: {
       eyebrow: "Why choose us", title: "Rencana yang jelas. Pilihan yang terasa pas.",
@@ -99,12 +92,7 @@ const homeDictionaries: Record<Locale, HomeDictionary> = {
     },
     packages: {
       eyebrow: "Travel concepts", title: "Find your kind of getaway.",
-      description: "A collection of ideas for imagining your next journey. Official packages, duration, inclusions, and availability are awaiting confirmation.", all: "View packages page", status: "Trip concept", price: "Pricing to be confirmed", link: "About tour packages",
-      items: [
-        { name: "Batam City Escape", category: "City & landmarks", description: "A travel idea for discovering Batam's city side and landmarks." },
-        { name: "Coastal Slow Days", category: "Beach & atmosphere", description: "Inspiration for experiencing the coast at a slower pace." },
-        { name: "Island Perspectives", category: "Islands & sea", description: "An imagined journey with the islands as its starting point." },
-      ],
+      description: "Published travel packages and information updates.",
     },
     benefits: {
       eyebrow: "Why choose us", title: "Clear plans. Choices that feel right.",
@@ -130,4 +118,4 @@ const homeDictionaries: Record<Locale, HomeDictionary> = {
 };
 
 export function getHomeDictionary(locale: Locale): HomeDictionary { return homeDictionaries[locale]; }
-export type { HomeDictionary, DestinationCopy, PackageCopy };
+export type { HomeDictionary, DestinationCopy };

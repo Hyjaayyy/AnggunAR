@@ -27,7 +27,7 @@ export default async function Home({ params }: Props) {
   const copy = getHomeDictionary(locale);
   return (
     <>
-      <HeroSection copy={copy.hero} locale={locale} />
+      <HeroSection locale={locale} />
       <IntroductionSection copy={copy.introduction} locale={locale} />
       <FeaturedDestinations copy={copy.destinations} locale={locale} imageLabel={copy.hero.visualLabel} />
       <PopularPackages copy={copy.packages} locale={locale} />

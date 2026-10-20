@@ -1,0 +1,51 @@
+.carousel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #102a43;
+  color: white;
+}
+
+.carousel :global(.hero-slides) {
+  display: grid;
+  min-height: clamp(36rem, 78svh, 55rem);
+}
+
+.carousel :global(.hero-slide) {
+  position: relative;
+  grid-area: 1 / 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 700ms ease;
+}
+
+.carousel :global(.hero-slide-active) { opacity: 1; pointer-events: auto; z-index: 1; }
+.carousel :global(.hero-backdrop), .carousel :global(.hero-overlay) { position: absolute; inset: 0; }
+.carousel :global(.hero-backdrop-coast) { background: radial-gradient(ellipse at 85% 30%, #437a87 0%, transparent 50%), linear-gradient(145deg, #102a43 15%, #15516a 55%, #244c5b 100%); }
+.carousel :global(.hero-backdrop-islands) { background: radial-gradient(ellipse at 80% 80%, #336578 0%, transparent 55%), linear-gradient(155deg, #142b46 10%, #164c61 60%, #102a43 100%); }
+.carousel :global(.hero-backdrop-horizon) { background: radial-gradient(ellipse at 90% 20%, #7f807e 0%, transparent 50%), linear-gradient(160deg, #142d49 20%, #305a6c 65%, #102a43 100%); }
+.carousel :global(.hero-overlay) { background: linear-gradient(90deg, rgb(7 22 37 / 85%) 0%, rgb(7 22 37 / 55%) 48%, rgb(7 22 37 / 20%) 100%), linear-gradient(0deg, rgb(7 22 37 / 75%), transparent 45%); z-index: 1; }
+.carousel :global(.hero-photo) { object-position: var(--hero-focus-desktop); }
+.carousel :global(.hero-slide-content) { position: relative; z-index: 2; padding-block: 5rem 10rem; }
+.carousel :global(.hero-fallback-label) { position: absolute; z-index: 2; right: max(1.25rem, calc((100% - 76rem) / 2)); bottom: 2.75rem; max-width: 19rem; text-align: right; }
+.carousel :global(.hero-controls) { position: absolute; z-index: 3; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 2rem; padding-right: 20rem; }
+
+@media (max-width: 767px) {
+  .carousel :global(.hero-slides) { min-height: clamp(37rem, calc(90svh - 5.5rem), 49rem); }
+  .carousel :global(.hero-slide-content) { padding-block: 3rem 12rem; }
+  .carousel :global(.hero-photo) { object-position: var(--hero-focus-mobile); }
+  .carousel :global(.hero-overlay) { background: linear-gradient(90deg, rgb(7 22 37 / 83%), rgb(7 22 37 / 40%)), linear-gradient(0deg, rgb(7 22 37 / 90%), transparent 60%); }
+  .carousel :global(.hero-controls) { bottom: 3.5rem; justify-content: space-between; padding-right: 0; gap: .5rem; }
+  .carousel :global(.hero-fallback-label) { right: auto; left: 1.25rem; bottom: 1.25rem; max-width: calc(100% - 2.5rem); text-align: left; }
+}
+
+@media (max-width: 359px) {
+  .carousel :global(.hero-controls) { gap: .25rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel :global(.hero-slide) { transition: none; }
+}

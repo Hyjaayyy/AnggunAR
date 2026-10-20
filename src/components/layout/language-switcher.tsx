@@ -1,19 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { locales, type Locale } from "@/i18n/config";
 
-export function LanguageSwitcher({ locale, label }: { locale: Locale; label: string }) {
+export function LanguageSwitcher(props: { locale: Locale; label: string }) {
+  return <Suspense fallback={<LanguageLinks {...props} />}><QueryLanguageLinks {...props} /></Suspense>;
+}
+function QueryLanguageLinks(props: { locale: Locale; label: string }) {
+  const query = useSearchParams();
+  return <LanguageLinks {...props} search={query.toString()} />;
+}
+function LanguageLinks({ locale, label, search = "" }: { locale: Locale; label: string; search?: string }) {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean).slice(1);
+  const current = new URLSearchParams(search);
+  const kept = new URLSearchParams();
+  const allowed = segments[0] === "packages" ? ["q", "destination", "category", "duration", "preview"] : segments[0] === "booking" ? ["package"] : [];
+  for (const key of allowed) { const value = current.get(key); if (value) kept.set(key, value); }
+  const query = kept.size ? `?${kept}` : "";
 
   return (
     <nav aria-label={label} className="flex shrink-0 rounded-lg border border-line p-0.5 text-[11px] font-semibold">
       {locales.map((target) => (
         <Link
           key={target}
-          href={`/${[target, ...segments].join("/")}`}
+          href={`/${[target, ...segments].join("/")}${query}`}
           hrefLang={target}
           lang={target}
           aria-current={locale === target ? "true" : undefined}

@@ -1,0 +1,55 @@
+.heroVisual {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  width: 100%;
+  background: #173f54;
+  border-radius: 10rem 10rem .75rem .75rem;
+}
+
+.coast {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 75% 18%, #79999d 0%, transparent 42%), linear-gradient(155deg, #254b62 10%, #356977 65%, #087f8c);
+}
+
+.coast::before {
+  content: "";
+  position: absolute;
+  inset: 48% -30% -40% -15%;
+  border: 1px solid #81b6b9;
+  border-radius: 50%;
+  box-shadow: 0 -1.75rem 0 0 rgb(129 182 185 / 12%), 0 -3.5rem 0 0 rgb(129 182 185 / 8%);
+  transform: rotate(-25deg);
+  background: #174957;
+}
+
+.coast::after {
+  content: "";
+  position: absolute;
+  inset: 62% -50% -40% -5%;
+  border: 1px solid rgb(129 182 185 / 40%);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  background: #102f43;
+}
+
+.philosophy {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.philosophy::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 4rem;
+  right: -10rem;
+  width: 35rem;
+  aspect-ratio: 1;
+  border: 1px solid rgb(8 127 140 / 15%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3rem rgb(8 127 140 / 3%), 0 0 0 7rem rgb(8 127 140 / 2%);
+}
