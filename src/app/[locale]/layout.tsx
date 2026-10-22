@@ -14,8 +14,7 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakart
 export const metadata: Metadata = {
   title: { default: business.name, template: `%s | ${business.name}` },
   robots: { index: false, follow: false },
-  // No approved favicon yet; do not request an absent /favicon.ico.
-  icons: { icon: "data:," },
+  icons: { icon: { url: "/images/brand/anggun-ar-icon.png", type: "image/png", sizes: "2500x2500" } },
 };
 
 export function generateStaticParams() {

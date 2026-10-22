@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Compass } from "lucide-react";
+import Image from "next/image";
+import logo from "../../../public/images/brand/anggun-ar-logo.png";
 import { business } from "@/lib/business";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
@@ -17,8 +18,8 @@ export function Header({ locale }: { locale: Locale }) {
     <header className="ocean-header sticky top-0 z-40 border-b border-line bg-white">
       <Container className="relative flex min-h-22 items-center justify-between gap-3 py-3 sm:gap-6">
         <Link href={`/${locale}`} aria-label={business.name} className="flex min-w-0 max-w-58 items-center gap-2.5 text-navy sm:gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-ocean/25 text-ocean sm:size-10"><Compass size={25} strokeWidth={1.3} aria-hidden="true" /></span>
-          <span className="min-w-0"><span className="block font-heading text-[15px] leading-snug font-bold tracking-tight sm:text-lg">Anggun AR</span><span className="block text-[9px] leading-5 font-medium tracking-[.12em] text-muted uppercase sm:text-[10px]">Sukses Abadi</span></span>
+          <Image src={logo} alt="Anggun AR Travel & Tour" sizes="(min-width: 640px) 64px, 48px" className="size-12 shrink-0 object-contain sm:size-16" priority />
+          <span className="min-w-0"><span className="block font-heading text-[15px] leading-snug font-bold tracking-tight sm:text-lg">Anggun AR</span><span className="block text-[9px] leading-5 font-medium tracking-[.12em] text-muted uppercase sm:text-[10px]">Travel &amp; Tour</span></span>
         </Link>
         <div className="flex shrink-0 items-center gap-2 sm:gap-5">
           <div className="order-2 xl:order-0"><MainNavigation items={items} label={t.navigation} menuLabel={copy.menu} closeLabel={copy.close} cta={{ href: `/${locale}/packages`, label: copy.cta }} /></div>
