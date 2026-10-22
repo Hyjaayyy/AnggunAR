@@ -1,5 +1,17 @@
 # Anggun AR Sukses Abadi
 
+## Global UI/UX Refinement — Ocean Blue Luxury
+
+Refinement visual disetujui pemilik setelah audit Phase 1–4. Desain menggunakan secondary navy, ocean mist, light ocean dan kartu putih dengan tokens navy/ocean/aqua serta font yang dipertahankan. Gallery menjadi acuan empty state, filter/surface, spacing hero dan footer; pola diterapkan ke Destinations, Packages, About, homepage serta Contact/placeholder. Konten bisnis dan mekanisme fitur tidak diubah.
+
+Masalah heading Gallery setelah pergantian bahasa ditangani dengan grouping hero/konten dalam satu wrapper presentasi, tanpa mengubah router, proxy atau language switcher. Snapshot Phase 4 dipertahankan; data/logika/terjemahan/konfigurasi/hero dibandingkan SHA-256. Tidak ada commit, push, deployment atau Phase 5. Panduan desain dan artefak: `docs/OCEAN_BLUE_LUXURY.md`; hasil pemeriksaan: `docs/VALIDATION.md`.
+
+## Status terkini — Phase 4
+
+Phase 4 Destinations & Gallery disetujui dan diimplementasikan lokal pada 20 Oktober 2026. Katalog/detail destinasi ID/EN, tiga slot foto lokal, pencarian/kategori GET, sumber informasi, relasi eksplisit ke paket published non-demo, dan integrasi Featured Destinations memakai data terpusat. Tiga destinasi memuat pengenalan geografis yang dirujuk ke Indonesia Travel, tanpa klaim layanan perusahaan.
+
+Galeri memiliki konfigurasi fleksibel, filter berdasarkan foto yang tersedia, dan lightbox keyboard/aksesibilitas tanpa library tambahan. Foto berizin belum diberikan, sehingga galeri publik menampilkan empty state. Fixture sintetis untuk pengujian tidak disimpan sebagai konten. Hero carousel, About Us dan Tour Packages dipertahankan. Tidak ada database, dashboard, backend booking, commit/push atau deployment dalam implementasi Phase 4. Panduan: `docs/DESTINATIONS.md`, `docs/GALLERY.md`.
+
 ## Status terkini — Phase 3
 
 Phase 3 Tour Packages & Itinerary Development disetujui pemilik dan diimplementasikan lokal pada 20 Oktober 2026. Katalog `/id/packages` dan `/en/packages`, detail ber-slug stabil, filter GET, galeri tepat tiga foto, itinerary, fasilitas dan panel inquiry menggunakan model lokal bertipe serta sumber data tunggal. Homepage memakai sumber/kartu sama, dengan pesan persiapan karena belum ada paket published resmi.
@@ -53,3 +65,7 @@ Nomor WhatsApp, email, alamat, domain, logo, legalitas, harga, fasilitas, foto r
 ## Arah pengembangan
 
 Destinasi dan kategori, paket dan itinerary resmi, galeri, inquiry, profil perusahaan, kontak, FAQ, dokumen hukum, dan dashboard admin akan dibangun bertahap. Detail tahapan ada di `docs/ROADMAP.md`. Phase 3 belum disetujui.
+
+## Penambahan Homepage Cinematic Video � 20 Oktober 2026
+
+Section bilingual baru telah ditambahkan tepat setelah Featured Destinations. Tiga foto/kartu Barelang, Nongsa, dan Pulau Abang serta hero carousel dipertahankan. Tidak ada perubahan cakupan Phase 5 atau backend. Media resmi belum tersedia; visual CSS premium ditampilkan tanpa broken media. Konfigurasi dan panduan pemasangan MP4/poster: `docs/HOME_VIDEO.md`. Perubahan tetap lokal dan tidak di-commit/deploy.

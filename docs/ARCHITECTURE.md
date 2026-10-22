@@ -1,5 +1,29 @@
 # Arsitektur
 
+## Ocean Blue Luxury â€” lapisan presentasi
+
+Refinement mempertahankan arsitektur Phase 1â€“4. `globals.css` menambah tokens secondary navy, mist, light ocean dan ocean ink serta class surface eksplisit (panel/card/filter/empty). Tokens dasar dan font tetap. Tidak menambah dependency, client boundary, data store, URL, router, proxy atau business logic.
+
+`src/components/ui/empty-state.tsx` adalah Server Component presentasional reusable untuk katalog/Gallery: ikon dekoratif, judul, deskripsi dan children CTA dari dictionary existing. ButtonLink dan SectionHeading tetap server. Footer navy dan alternating section light/mist/navy menggunakan teks berkontras, bukan mengganti seluruh bg-white secara global. PhotoGallery hanya berubah class pada figure/caption; state, efek, handler dan keyboard tetap identik.
+
+Listing Gallery/destinasi/paket memakai satu wrapper DOM untuk hero dan konten. Ini memperbaiki sasaran scroll fragment saat pergantian locale yang sebelumnya dapat menuju section kedua dan melewati heading. Perilaku URL/query, locale, route resolution dan validasi keamanan tetap di lapisan yang sama. Tidak ada handler scroll baru atau perubahan LanguageSwitcher.
+
+Seluruh file hero carousel dan data/dictionary-nya dipertahankan byte-identik. Styling homepage menyentuh enam section lain. About mempertahankan konten resmi; Contact/booking/legal tetap placeholder tanpa form. Spesifikasi dan panduan validasi ada di `OCEAN_BLUE_LUXURY.md`.
+
+## Phase 4 â€” Destinations & Gallery
+
+Route khusus `destinations/page.tsx`, `destinations/[slug]/page.tsx` dan `gallery/page.tsx` berada di bawah locale. Placeholder mengecualikan keempat fitur khusus (About, packages, destinations, gallery). Proxy tetap whitelist ketat dan menambahkan pola tiga segmen hanya untuk detail destinasi published dengan sumber. Layout/halaman tetap memvalidasi locale; detail memanggil notFound saat tidak tersedia. Preview draft paket tidak membuka draft destinasi.
+
+`src/types/destination.ts` memuat ID/slug, kategori, lokasi, status, tuple tiga foto dengan cover pada indeks 0, konten ID/EN, highlights, relasi paket dan sumber. `src/data/destinations.ts` adalah sumber tunggal homepage/katalog/detail. `src/lib/destinations.ts` server-only menangani publikasi, filter dan relasi paket memakai getPackages yang mempertahankan isolasi draft/demo. Tidak menambahkan relasi berdasarkan tebakan lokasi.
+
+`src/types/gallery.ts` dan `src/data/gallery.ts` memisahkan foto, kategori, status, caption, alt/focal point dan catatan izin. `src/lib/gallery.ts` hanya mengirim foto published dengan izin terisi serta file yang ada. Dataset kosong sampai pemilik menyediakan foto. `src/lib/local-photos.ts` membatasi path WebP lokal destinasi/galeri dan memeriksa keberadaan file di server. `LocalPhoto` memakai Next Image ketika tersedia, aspect ratio tetap dan fallback CSS saat kosong/hilang. Komponen PackagePhoto/logic Phase 3 tidak diubah.
+
+`EditorialHero` memakai tokens proyek dan ilustrasi CSS pesisir. DestinationCard/Filters dan route baru adalah Server Components. Hanya `PhotoGallery` menjadi client boundary: thumbnail lazy/responsive, satu foto besar ketika dipilih, native modal dialog, focus awal ke Close, Tab/Shift+Tab containment, keyboard panah/Escape, counter live, restore focus dan body overflow saat tutup/unmount. Error foto galeri menghasilkan fallback teks. Daftar foto berubah karena filter me-remount galeri agar state dialog tidak merujuk foto lama.
+
+Dictionary modular ada di `src/i18n/destinations.ts` dan `gallery.ts`. Filter GET berfungsi tanpa JS. LanguageSwitcher membawa q/category destinasi dan category galeri, memvalidasi ID kategori terhadap daftar bertipe; perilaku query paket tetap. Metadata bilingual/dinamis mengikuti Metadata API, robots noindex tetap; domain null sehingga canonical/hreflang produksi belum dibuat. Gallery filter hanya menampilkan kategori yang memiliki foto lolos pemeriksaan server.
+
+Tidak ada perubahan technology stack, dependency baru, layanan eksternal, storage backend, autentikasi atau pengumpulan data. Panduan editor dan validasi fixture ada di `DESTINATIONS.md` dan `GALLERY.md`. Deskripsi arsitektur fase sebelumnya di bawah merupakan catatan historis.
+
 ## Phase 3 â€” katalog dan itinerary (20 Oktober 2026)
 
 Route khusus `src/app/[locale]/packages/page.tsx` membaca query GET di server; detail `packages/[slug]/page.tsx` memvalidasi locale dan paket lewat `getPackage`, lalu memanggil `notFound()` jika tidak tersedia. Proxy hanya membuka kedalaman tiga segmen untuk slug paket terdaftar dan status yang diizinkan; pola route lain tetap ditolak. Placeholder mengecualikan packages dari static params. Halaman placeholder membaca identitas paket hanya untuk booking dan tidak mengumpulkan data.
@@ -53,7 +77,7 @@ Catatan refinement: TravelVisual tidak lagi dipakai pada hero. Carousel memakai 
 - `src/components/home/hero-section.tsx`: wrapper server yang memilih dictionary locale.
 - `hero-carousel.tsx`: client boundary, indeks aktif, izin autoplay, pause hover/focus/visibility/reduced motion, dan state kegagalan gambar.
 - `hero-slide.tsx`: teks/CTA/foto/gradient. Slide nonaktif memakai inert, aria-hidden, dan pointer-events none. Hanya slide aktif menggunakan h1; judul slide lain h2 yang tersembunyi dari accessibility tree.
-- `hero-controls.tsx`: tombol native Previous/Next/Pause/Play serta indikator dengan aria-current dan aria-controls. Arrow Left/Right ditangani di region carousel.
+- Kontrol visual Hero tidak lagi dirender. `hero-controls.tsx` adalah komponen lama yang tidak dipanggil carousel. Region carousel fokusable menyediakan Arrow Left/Right, Home/End, dan Space untuk pause/resume; instruksi bilingual khusus screen reader. Pointer Events mendukung swipe/drag, wheel horizontal mendukung touchpad. Gesture dimulai pada CTA diabaikan, dan `touch-action: pan-y pinch-zoom` mempertahankan scroll vertikal serta pinch zoom.
 - `hero-carousel.module.css`: seluruh styling hero di-scope pada CSS module. Grid menempatkan slide pada sel yang sama sambil tetap menghitung tinggi konten tertinggi, sehingga indeks aktif tidak menggeser konten di bawah. Lebar full viewport content area, tinggi desktop minimum 36rem dengan target 78svh dan batas minimum target/maksimum target melalui clamp; konten tetap dapat tumbuh agar tidak terpotong pada zoom atau viewport pendek.
 - `src/data/hero-slides.ts`: stable ID, href, image.src null/lokal, focal point desktop/mobile, jenis fallback, dan interval 7000ms.
 - `src/i18n/hero.ts`: dictionary bertipe untuk tiga slide, kontrol, fallback label, dan imageAlt terjemahan.
@@ -86,3 +110,44 @@ Halaman memiliki satu h1, tujuh judul section h2, h3 untuk item misi/nilai, orde
 ## Pengembangan berikutnya
 
 Pisahkan route fitur saat konten dan perilakunya tersedia; jangan memperbesar placeholder menjadi seluruh aplikasi. Data destinasi/paket dapat dipindahkan ke `src/data` dan tipe domain ke `src/types` saat digunakan. PostgreSQL dan Prisma direncanakan di lapisan server; komponen tampilan tidak mengakses database langsung. Validasi input, autentikasi admin, upload foto dan pengelolaan inquiry harus dirancang sebelum ditambahkan. Tidak ada dependency integrasi tersebut pada Phase 1.
+
+## Homepage Cinematic Video — 20 Oktober 2026
+
+Homepage sekarang memiliki delapan section: Hero Carousel, Introduction, Featured Destinations, Cinematic Video, Popular Packages, Why Choose Us, Travel Inspiration, Final CTA. Penambahan hanya menyisipkan komponen baru setelah Featured Destinations; tiga kartu destinasi tetap identik dengan baseline sebelum perubahan.
+
+Konfigurasi aset ada di `src/data/home-video.ts`, terjemahan ID/EN di `src/i18n/home-video.ts`, dan pemeriksaan keberadaan media server-only di `src/lib/home-video.ts`. `cinematic-section.tsx` tetap Server Component; interaksi dibatasi pada `cinematic-video.tsx` dan controller `src/lib/cinematic-playback.ts`. CSS module mengisolasi styling. Tidak ada perubahan routing, proxy, data bisnis, atau dependency.
+
+Sumber video dipasang saat terlihat dan playback diizinkan; preload none, muted, loop, playsInline. IntersectionObserver, Page Visibility, reduced motion dan pilihan Pause manual mengendalikan lifecycle. Poster Next Image atau fallback CSS tetap tersedia; berkas yang tidak ada tidak menghasilkan request broken media. Homepage statis harus di-build ulang setelah memasukkan aset. Panduan lengkap: `docs/HOME_VIDEO.md`.
+
+## Aset cinematic dan origin development — perbaikan 20 Oktober 2026
+
+Path MP4 resmi `/videos/home/batam-cinematic.mp4` dikecualikan secara exact dari matcher proxy atas persetujuan khusus pemilik. Sebelumnya server mendeteksi berkas, tetapi request publik menerima HTML 404 dari validasi locale. Semua URL halaman, validasi locale, 404 dan isolasi draft tetap menggunakan business logic proxy yang sama. Tidak ada route API, rewrite, atau perubahan controller video.
+
+`allowedDevOrigins` pada next.config.ts hanya berisi host LAN development `192.168.88.189`. Origin tersebut sebelumnya ditolak oleh pemeriksaan Next.js untuk HMR; sesudah perubahan handshake WebSocket menghasilkan 101. Perlindungan origin tetap aktif tanpa wildcard. Video sudah dapat diputar di localhost meskipun HMR LAN sebelumnya gagal, sehingga keduanya dipastikan merupakan masalah terpisah.
+
+Homepage tetap Hero Carousel ? Cinematic ? Introduction ? Featured Destinations ? Popular Packages ? Why Choose Us ? Travel Inspiration ? Final CTA. Panduan aset dan browser test asli: docs/HOME_VIDEO.md.
+
+## Background cinematic tanpa kontrol — 20 Oktober 2026
+
+Permintaan terbaru mengganti mode player menjadi video dekoratif. CinematicSection mempertahankan lokasi tepat setelah Hero Carousel; di dalam frame, video/poster/fallback berada di bawah overlay navy transparan 70% dan konten teks bilingual di atasnya. Semua teks utama dipertahankan. Komponen client tidak menerima dictionary player, tidak membuat tombol/status interaksi, dan video disembunyikan dari accessibility tree dengan aria-hidden serta tabIndex -1. Logika controller hanya otomatis dan cleanup; tidak ada API play/pause manual. Reduced motion atau penolakan autoplay menampilkan lapisan statis tanpa kontrol. Frame desktop mengikuti 16:9 dengan tinggi minimum 20rem untuk keterbacaan teks di mobile. File MP4 asli, proxy/origin config, homepage, hero dan section lain tetap dipertahankan. Panduan terbaru: docs/HOME_VIDEO.md.
+
+## Full-width cinematic — 20 Oktober 2026
+
+Container yang sebelumnya membungkus media menyebabkan gutter kiri/kanan; border 1px, radius dan shadow frame memperjelas batasnya. Section kini sekaligus menjadi data-cinematic-frame dengan width 100%, position relative dan overflow hidden. Background media dan overlay absolut memakai inset 0 dan ukuran yang identik. Container berada di lapisan konten saja, sehingga heading/deskripsi sejajar navbar tanpa membatasi background. Tidak ada perubahan global, negative margin, wrapper 100vw, controller, data, proxy atau route. Tinggi minimum responsif clamp(24rem,48vw,48rem) dengan konten dalam normal flow menjaga crop cover dan keterbacaan mobile. Border hanya atas/bawah.
+
+## Ketahanan lifecycle video dan diagnosis origin — 20 Oktober 2026
+
+Audit browser bersih sebelum perbaikan memutar MP4 baru 18.892.571 byte pada localhost dan LAN dengan readyState 4, error null, networkState idle, opacity 1, currentTime bertambah, serta Content-Type video/mp4/HTTP 206/range/ETag yang identik. Localhost secure context dan HTTP LAN non-secure context tidak menimbulkan penolakan autoplay pada Chrome uji. Source tetap URL relatif. Tidak ada bukti stale cache, ukuran/codec, media detection atau CSS sebagai penyebab kegagalan khusus sesi pemilik. Tidak mengubah resolver, URL media, cache headers, next config, proxy, route atau desain.
+
+Dua cacat lifecycle dibuktikan pada controller lama: (1) promise controller yang sudah disposed masih dapat memanggil pause pada elemen yang kini dimiliki controller baru; unit regression gagal pada salinan kode lama; (2) seluruh rejection play(), termasuk AbortError akibat interupsi loading, dikategorikan sebagai blokir autoplay permanen. Reproduksi browser dengan native play() lalu native load() pada MP4 asli menghasilkan AbortError, readyState 4, error null, paused true, currentTime 0 dan opacity 0 pada LAN. Sesudah perbaikan dengan reproduksi yang sama, paused false, currentTime sekitar 4,871 detik dan opacity 1. Ini reproduksi interupsi terkontrol, bukan klaim bahwa error pada sesi pribadi pemilik sudah tertangkap secara langsung.
+
+Perubahan aplikasi hanya src/lib/cinematic-playback.ts: guard disposed pada callback/event; klasifikasi NotAllowedError tetap menjadi fallback tanpa retry; AbortError dapat pulih maksimal satu kali melalui kesiapan media/canplay; interupsi berulang kembali fallback; recovery tetap mengikuti viewport, reduced motion dan tab visibility. Tidak ada timer retry atau polling aplikasi. Handler readiness dibersihkan pada destroy. Diagnostik event terakhir hanya pada development disimpan di video.dataset.cinematicDiagnostic (status, error name, jumlah recovery, readiness, visibility, source publik), tanpa UI/kontrol/log berulang. Production tidak mengekspos atribut tersebut. Unit tests memverifikasi stale promise/observer, recovery offscreen/reduced motion, satu retry maksimum dan policy denial.
+
+Test tambahan scripts/verify-home-video-lifecycle-browser.mjs memeriksa browser Chrome CDP pada kedua origin ID/EN dan 390/1440px: direct load, reload sesudah load event, client remount, history back/forward, language switch, cache on/off, slow network 512KB/s+150ms, controlled native interruption. currentTime DAN totalVideoFrames harus bertambah, video opacity/display/visibility benar, metadata/HTTP/network/console disimpan. Laporan development artifacts/home-video-lifecycle/after-results.json berisi 54 pemeriksaan playback yang lulus. Satu ERR_CACHE_OPERATION_NOT_SUPPORTED dicatat ketika CDP mengganti mode cache byte-range; browser pulih dan setiap skenario tetap merender frame bergerak. Peristiwa tersebut disimpan, tidak dinyatakan sebagai bukti stale cache pada sesi pemilik.
+
+Lihat docs/HOME_VIDEO.md untuk cara membaca snapshot pada sesi yang masih gagal. Seluruh source/aset selain controller identik dengan baseline, termasuk MP4 baru, komponen/CSS video, hero, section homepage lain, data dan proxy. [HMR] connected sendiri merupakan status normal; handshake development berhasil 101 dan tidak ada error HMR pada matrix akhir. Tidak ada dependency, commit, push atau deployment.
+
+
+### Penyederhanaan kontrol Hero
+
+Hanya `hero-carousel.tsx`, CSS module Hero dan instruksi dictionary Hero yang diperbarui. Semua konfigurasi slide, judul/deskripsi/CTA, foto/fallback, durasi autoplay 7000ms dan transisi 700ms dipertahankan. Padding bawah khusus kontrol dihapus; tinggi minimum sinematik Hero tetap. Pointer horizontal intent >10px memilih drag, ambang navigasi 48px dengan dominasi horizontal 1.25?; arah vertikal membatalkan gesture tanpa preventDefault. Transfer implicit touch capture dari child ke section tidak dianggap pembatalan oleh event lostpointercapture child yang bubbling. Wheel horizontal dikonsumsi hanya jika dominan, akumulasi 60px dan satu perpindahan per burst (jeda 250ms memulai burst baru), Ctrl+wheel dan wheel vertikal dibiarkan native. Semua event listener wheel dibersihkan saat unmount. Tidak ada dependency baru atau perubahan Cinematic Video/routing/data bisnis.
