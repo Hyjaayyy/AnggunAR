@@ -1,0 +1,7 @@
+.panel { position: fixed; z-index: 100; right: .75rem; bottom: .75rem; width: min(34rem, calc(100% - 1.5rem)); max-height: 60dvh; overflow: auto; padding: .875rem; border: 1px solid #8bd3dd; border-radius: .5rem; background: #102a43; color: #fff; font: .8125rem/1.5 system-ui, sans-serif; pointer-events: auto; }
+.panel summary { cursor: pointer; font-weight: 700; }
+.panel p { margin-block: .5rem; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.panel button { padding: .5rem .75rem; border: 1px solid #8bd3dd; border-radius: .25rem; background: #fff; color: #102a43; cursor: pointer; }
+.panel textarea { display: block; width: 100%; height: 28dvh; padding: .5rem; border: 1px solid #8bd3dd; background: #071625; color: #fff; font: .75rem/1.5 monospace; }
+.panel :is(button, textarea, summary):focus-visible { outline: 3px solid #8bd3dd; outline-offset: 3px; }

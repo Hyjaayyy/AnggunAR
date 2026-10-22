@@ -7,6 +7,7 @@ import { getHomeDictionary } from "@/i18n/home";
 import { HeroSection } from "@/components/home/hero-section";
 import { IntroductionSection } from "@/components/home/introduction-section";
 import { FeaturedDestinations } from "@/components/home/featured-destinations";
+import { CinematicSection } from "@/components/home/cinematic-section";
 import { PopularPackages } from "@/components/home/popular-packages";
 import { WhyChooseUs } from "@/components/home/why-choose-us";
 import { TravelInspiration } from "@/components/home/travel-inspiration";
@@ -28,8 +29,9 @@ export default async function Home({ params }: Props) {
   return (
     <>
       <HeroSection locale={locale} />
+      <CinematicSection locale={locale} />
       <IntroductionSection copy={copy.introduction} locale={locale} />
-      <FeaturedDestinations copy={copy.destinations} locale={locale} imageLabel={copy.hero.visualLabel} />
+      <FeaturedDestinations copy={copy.destinations} locale={locale} />
       <PopularPackages copy={copy.packages} locale={locale} />
       <WhyChooseUs copy={copy.benefits} />
       <TravelInspiration copy={copy.inspiration} locale={locale} />

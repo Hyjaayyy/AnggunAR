@@ -21,7 +21,6 @@ type Dictionary = {
   preparation: string;
   preparationDescription: string;
   placeholder: string;
-  contactPending: string;
   bookingPending: string;
   legalPending: string;
   backHome: string;
@@ -41,7 +40,6 @@ const dictionaries: Record<Locale, Dictionary> = {
     preparation: "Persiapan perjalanan, dimulai di sini",
     preparationDescription: "Jelajahi bagian website yang akan dikembangkan secara bertahap.",
     placeholder: "Halaman ini sedang dipersiapkan. Konten akan ditambahkan setelah informasi resmi tersedia dan disetujui.",
-    contactPending: "Email, nomor WhatsApp, alamat, dan peta belum tersedia. Kanal kontak akan ditampilkan setelah dikonfirmasi.",
     bookingPending: "Pemesanan online belum tersedia. Halaman ini belum menerima atau memproses data maupun pembayaran.",
     legalPending: "Dokumen ini belum diterbitkan. Ketentuan resmi akan ditambahkan setelah ditinjau dan disetujui.",
     backHome: "Kembali ke beranda",
@@ -50,9 +48,9 @@ const dictionaries: Record<Locale, Dictionary> = {
       destinations: { title: "Destinasi", description: "Ruang untuk mengenal tujuan wisata di Batam dan sekitarnya." },
       packages: { title: "Paket Wisata", description: "Informasi paket, durasi, itinerary, dan harga akan tersedia setelah dikonfirmasi." },
       gallery: { title: "Galeri", description: "Dokumentasi perjalanan akan ditampilkan setelah foto dan izin penggunaannya tersedia." },
-      booking: { title: "Inquiry & Booking", description: "Ruang untuk merencanakan kebutuhan perjalanan Anda di tahap berikutnya." },
+      booking: { title: "Inquiry & Booking", description: "Diskusikan rencana perjalanan dan proses pemesanan secara langsung melalui WhatsApp resmi kami." },
       about: { title: "Tentang Kami", description: "Anggun AR Sukses Abadi menyiapkan website dengan fokus pada wisata dan perjalanan di Batam, Kepulauan Riau, Indonesia." },
-      contact: { title: "Kontak", description: "Informasi kontak resmi perusahaan akan disediakan di halaman ini." },
+      contact: { title: "Kontak", description: "Alamat kantor, email, dan WhatsApp resmi untuk konsultasi perjalanan Anda." },
       faq: { title: "Pertanyaan Umum", description: "Jawaban mengenai layanan dan perjalanan akan ditambahkan sesuai informasi resmi." },
       privacy: { title: "Kebijakan Privasi", description: "Ruang untuk kebijakan pengelolaan data pribadi." },
       terms: { title: "Syarat & Ketentuan", description: "Ruang untuk ketentuan penggunaan website dan layanan." },
@@ -69,7 +67,6 @@ const dictionaries: Record<Locale, Dictionary> = {
     preparation: "Travel planning starts here",
     preparationDescription: "Explore the sections we will develop step by step.",
     placeholder: "This page is being prepared. Content will be added once official information is available and approved.",
-    contactPending: "Email, WhatsApp number, address, and map are not available yet. Contact channels will appear once confirmed.",
     bookingPending: "Online booking is not available yet. This page does not collect or process data or payments.",
     legalPending: "This document has not been published. Official terms will be added after review and approval.",
     backHome: "Back to home",
@@ -78,9 +75,9 @@ const dictionaries: Record<Locale, Dictionary> = {
       destinations: { title: "Destinations", description: "A space to discover destinations in and around Batam." },
       packages: { title: "Tour Packages", description: "Packages, duration, itineraries, and pricing will be added once confirmed." },
       gallery: { title: "Gallery", description: "Travel photography will appear once images and usage permissions are available." },
-      booking: { title: "Inquiry & Booking", description: "A space to plan your travel needs in a future phase." },
+      booking: { title: "Inquiry & Booking", description: "Discuss travel plans and the booking process directly through our official WhatsApp." },
       about: { title: "About Us", description: "Anggun AR Sukses Abadi is preparing a website focused on travel and tourism in Batam, Riau Islands, Indonesia." },
-      contact: { title: "Contact", description: "Official company contact information will be provided here." },
+      contact: { title: "Contact", description: "Office address, official email, and WhatsApp for your travel inquiries." },
       faq: { title: "Frequently Asked Questions", description: "Answers about services and travel will be added based on official information." },
       privacy: { title: "Privacy Policy", description: "A space for the personal data management policy." },
       terms: { title: "Terms & Conditions", description: "A space for website and service terms." },

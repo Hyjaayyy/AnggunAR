@@ -19,11 +19,13 @@ export type HeroDictionary = {
   indicator: string;
   fallback: string;
   reducedMotion: string;
+  gestures: string;
   slides: Record<HeroSlideId, HeroSlideCopy>;
 };
 
 const dictionaries: Record<Locale, HeroDictionary> = {
   id: {
+    gestures: "Geser atau tarik untuk mengganti slide. Saat area carousel difokuskan, gunakan panah kiri/kanan, Home/End, dan Spasi untuk menjeda atau melanjutkan pergantian otomatis.",
     label: "Inspirasi perjalanan Batam", slide: "slide", previous: "Slide sebelumnya", next: "Slide berikutnya",
     pause: "Jeda pergantian otomatis", play: "Aktifkan pergantian otomatis", indicator: "Tampilkan slide",
     fallback: "Visual konsep · foto segera dilengkapi", reducedMotion: "Pergantian otomatis dinonaktifkan mengikuti preferensi gerakan Anda.",
@@ -34,6 +36,7 @@ const dictionaries: Record<Locale, HeroDictionary> = {
     },
   },
   en: {
+    gestures: "Swipe or drag to change slides. With the carousel focused, use Left/Right arrows, Home/End, and Space to pause or resume automatic slides.",
     label: "Batam travel inspiration", slide: "slide", previous: "Previous slide", next: "Next slide",
     pause: "Pause automatic slides", play: "Enable automatic slides", indicator: "Show slide",
     fallback: "Concept visual · photography to follow", reducedMotion: "Automatic slides are disabled to respect your motion preference.",

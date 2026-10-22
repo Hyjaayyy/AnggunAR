@@ -9,7 +9,7 @@ type NavigationItem = { href: string; label: string };
 export function MainNavigation({ items, label, menuLabel, closeLabel, cta }: {
   items: NavigationItem[]; label: string; menuLabel: string; closeLabel: string; cta: NavigationItem;
 }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const details = useRef<HTMLDetailsElement>(null);
   function closeMenu() { if (details.current) details.current.open = false; }
   function renderLinks(mobile = false) {

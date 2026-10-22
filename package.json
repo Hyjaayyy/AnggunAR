@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node scripts/verify-home-video.mjs",
+    "test:production": "node scripts/run-production-checks.mjs",
+    "test:recovery": "node scripts/verify-recovery-browser.mjs"
   },
   "engines": {
     "node": ">=24 <25"

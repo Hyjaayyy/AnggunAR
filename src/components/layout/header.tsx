@@ -14,7 +14,7 @@ export function Header({ locale }: { locale: Locale }) {
   const copy = getHomeDictionary(locale).navigation;
   const items = [{ href: `/${locale}`, label: t.home }, ...navigation.map((slug) => ({ href: `/${locale}/${slug}`, label: t.pages[slug].title }))];
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-white">
+    <header className="ocean-header sticky top-0 z-40 border-b border-line bg-white">
       <Container className="relative flex min-h-22 items-center justify-between gap-3 py-3 sm:gap-6">
         <Link href={`/${locale}`} aria-label={business.name} className="flex min-w-0 max-w-58 items-center gap-2.5 text-navy sm:gap-3">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-ocean/25 text-ocean sm:size-10"><Compass size={25} strokeWidth={1.3} aria-hidden="true" /></span>

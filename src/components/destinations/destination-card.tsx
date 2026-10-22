@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { TravelVisual, type VisualKind } from "@/components/home/travel-visual";
-import type { DestinationCopy } from "@/i18n/home";
+import { LocalPhoto } from "@/components/ui/local-photo";
+import { categoryLabels, getDestinationsDictionary } from "@/i18n/destinations";
+import type { Destination } from "@/types/destination";
 import type { Locale } from "@/i18n/config";
 
-export function DestinationCard({ item, visual, locale, imageLabel, linkLabel, index }: {
-  item: DestinationCopy; visual: VisualKind; locale: Locale; imageLabel: string; linkLabel: string; index: number;
-}) {
-  return <article className="min-w-0">
-    <TravelVisual kind={visual} label={imageLabel} className="aspect-[4/3] rounded-xl" />
-    <div className="mt-5 flex items-center gap-3 text-[11px] font-semibold tracking-wider text-ocean uppercase"><span>0{index + 1}</span><span className="h-px w-5 bg-line" /><span>{item.category}</span></div>
-    <h3 className="mt-3 text-xl font-semibold tracking-tight">{item.name}</h3>
-    <p className="mt-3 text-sm leading-6 text-muted">{item.description}</p>
-    <Link href={`/${locale}/destinations`} className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-ocean hover:text-navy" aria-label={`${linkLabel}: ${item.name}`}>{linkLabel}<ArrowUpRight size={16} aria-hidden="true" /></Link>
+export function DestinationCard({ item, locale }: { item: Destination; locale: Locale }) {
+  const t = getDestinationsDictionary(locale); const copy = item.content[locale];
+  return <article className="ocean-card flex min-w-0 flex-col overflow-hidden transition-shadow" data-destination-card>
+    <LocalPhoto photo={item.images[0]} locale={locale} fallback={t.photo} />
+    <div className="flex flex-1 flex-col p-6"><p className="text-xs font-semibold tracking-wider text-ocean uppercase">{categoryLabels[locale][item.category]}</p>
+    <h3 className="mt-3 text-xl font-semibold">{copy.name}</h3><p className="mt-2 text-xs leading-5 text-muted">{item.location[locale]}</p>
+    <p className="mt-3 flex-1 text-sm leading-6 text-muted">{copy.shortDescription}</p>
+    <Link href={`/${locale}/destinations/${item.slug}`} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-ocean hover:text-navy" aria-label={`${t.explore}: ${copy.name}`}>{t.explore}<ArrowUpRight size={16} aria-hidden="true" /></Link></div>
   </article>;
 }

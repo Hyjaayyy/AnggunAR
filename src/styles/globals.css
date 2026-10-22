@@ -9,14 +9,18 @@
   --color-canvas: #f8fafc;
   --color-muted: #526779;
   --color-line: #dce5e9;
+  --color-navy-secondary: #173d59;
+  --color-mist: #e8f3f6;
+  --color-ocean-light: #f5fafb;
+  --color-ocean-ink: #066575;
 }
 
 html { scroll-behavior: smooth; scroll-padding-top: 7rem; }
-body { margin: 0; background: #f8fafc; color: #102a43; font-family: var(--font-inter), Arial, Helvetica, sans-serif; }
+body { margin: 0; background: #f5fafb; color: #102a43; font-family: var(--font-inter), Arial, Helvetica, sans-serif; }
 h1, h2, h3, h4 { font-family: var(--font-jakarta), Arial, Helvetica, sans-serif; text-wrap: balance; }
 .container { width: min(100% - 2.5rem, 76rem); margin-inline: auto; }
 .section-space { padding-block: clamp(3.5rem, 7vw, 6.5rem); }
-.eyebrow { display: flex; align-items: center; gap: .75rem; color: #087f8c; font-size: .6875rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.eyebrow { display: flex; align-items: center; gap: .75rem; color: #066575; font-size: .6875rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
 .eyebrow::before { content: ""; width: 1.75rem; height: 1px; background: currentColor; flex-shrink: 0; }
 a, button { -webkit-tap-highlight-color: transparent; }
 button, summary { touch-action: manipulation; }
@@ -24,7 +28,36 @@ a, button, summary { scroll-margin-top: 7rem; }
 :focus-visible { outline: 3px solid #087f8c; outline-offset: 4px; }
 footer :focus-visible, .dark-surface :focus-visible { outline-color: #24b8b0; }
 ::selection { background: #bcece8; color: #102a43; }
+
+/* Ocean Blue Luxury: explicit presentation surfaces, independent of route/data logic. */
+.ocean-mist { background: #e8f3f6; }
+.ocean-light { background: #f5fafb; }
+.ocean-secondary { background: #173d59; }
+.ocean-mist .text-ocean, .ocean-light .text-ocean { color: #066575; }
+.ocean-header { background: #fff; box-shadow: 0 2px 14px rgb(16 42 67 / 4%); }
+.ocean-panel { border: 1px solid #cddfe6; border-radius: 1rem; background: #fff; box-shadow: 0 8px 28px rgb(16 42 67 / 4%); }
+.ocean-filter { border: 1px solid #c4dbe3; border-top: 3px solid #087f8c; border-radius: 1rem; background: #fff; box-shadow: 0 8px 24px rgb(16 42 67 / 4%); }
+.ocean-card { border: 1px solid #cddfe6; border-radius: 1rem; background: #fff; box-shadow: 0 5px 20px rgb(16 42 67 / 3%); }
+.ocean-card:hover { border-color: #9abecb; box-shadow: 0 10px 28px rgb(16 42 67 / 7%); }
+.ocean-card > [data-gallery-open]:focus-visible { outline: 3px solid white; outline-offset: -6px; }
+.ocean-card > [data-gallery-open]:focus-visible::after { content: ""; position: absolute; z-index: 1; inset: 0; border: 3px solid #102a43; border-radius: inherit; box-shadow: inset 0 0 0 3px white; pointer-events: none; }
+.ocean-hero { border-bottom: 1px solid #33526a; }
+.ocean-hero-content { padding-block: clamp(3.5rem, 6vw, 5.5rem); }
+.ocean-hero h1 { overflow-wrap: break-word; }
+.ocean-empty { max-width: 58rem; margin-inline: auto; overflow: hidden; }
+.ocean-empty-mark { position: relative; overflow: hidden; background: #173d59; color: #b9e4ea; }
+.ocean-empty-mark::after { content: ""; position: absolute; width: 12rem; aspect-ratio: 1; border: 1px solid rgb(84 182 194 / 35%); border-radius: 50%; right: -4rem; bottom: -7rem; }
+.ocean-dark-copy { color: white; }
+.ocean-dark-copy .eyebrow { color: #94d5df; }
+.ocean-dark-copy h2 { color: white; }
+.ocean-dark-copy .text-muted { color: #d0e1e9; }
+.ocean-dark-copy .text-ocean { color: #94d5df; }
+.ocean-detail-heading { border-bottom: 1px solid #c9dfe6; padding-bottom: 2rem; }
+.ocean-source { border-top: 1px solid #c9dfe6; padding-top: 1.5rem; }
+.ocean-placeholder { min-height: 60vh; padding-block: clamp(3.5rem, 7vw, 6rem); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.ocean-inquiry { border-top: 3px solid #087f8c; }

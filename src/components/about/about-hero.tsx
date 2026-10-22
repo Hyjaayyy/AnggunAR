@@ -8,7 +8,7 @@ import styles from "./about.module.css";
 
 export function AboutHero({ copy, locale }: { copy: AboutDictionary["hero"]; locale: Locale }) {
   return (
-    <section aria-labelledby="about-title" className="dark-surface bg-navy text-white">
+    <section aria-labelledby="about-title" className="ocean-hero dark-surface bg-navy text-white">
       <Container className="grid items-center gap-10 py-12 sm:py-16 lg:grid-cols-[1.2fr_1fr] lg:gap-20 lg:py-20">
         <div className="min-w-0">
           <p className="eyebrow !text-aqua">{copy.eyebrow}</p>
