@@ -18,7 +18,7 @@ for (const locale of ["id", "en"]) {
     assert.ok(/<h1[ >]/.test(html), `${path}: main heading`);
     assert.ok(/name="robots" content="noindex, nofollow"/.test(html), `${path}: placeholder robots`);
     assert.ok(/<title>[^<]+Anggun AR Sukses Abadi<\/title>/.test(html), `${path}: metadata title`);
-    if (slug !== "packages") assert.ok(!html.includes("<form"), `${path}: no inactive booking form`);
+    if (!["packages", "destinations", "gallery"].includes(slug)) assert.ok(!html.includes("<form"), `${path}: no inactive booking form`);
     checks++;
     console.log(`PASS ${path}: 200, lang, metadata, heading, language link`);
   }

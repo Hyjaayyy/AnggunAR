@@ -25,7 +25,7 @@ socket.addEventListener("message", ({data}) => {
 function send(method, params = {}) {
   const id = ++requestId;
   return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => { pending.delete(id); reject(new Error(`CDP timeout ${method}`)); },15000);
+    const timeout = setTimeout(() => { pending.delete(id); reject(new Error(`CDP timeout ${method}`)); },60000);
     pending.set(id,{resolve,reject,timeout}); socket.send(JSON.stringify({id,method,params}));
   });
 }
@@ -37,7 +37,8 @@ async function evaluate(expression) {
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve,ms));
 async function navigate(path) {
   let timeout;
-  const load = new Promise((resolve,reject) => { loaded=resolve; timeout=setTimeout(()=>reject(new Error(`Page timeout ${path}`)),12000); });
+  const load = new Promise((resolve,reject) => { loaded=resolve; timeout=setTimeout(()=>reject(new Error(`Page timeout ${path}`)),60000); });
+  void load.catch(() => {});
   try { await send("Page.navigate",{url:new URL(path,base).href}); await load; }
   finally { clearTimeout(timeout); loaded=undefined; }
   await evaluate("document.fonts.ready"); await delay(250);

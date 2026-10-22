@@ -109,12 +109,12 @@ try {
         clippedLinks: [...document.querySelectorAll('a')].filter(a => a.getClientRects().length && !a.closest('details:not([open])') && !a.classList.contains('sr-only')).filter(a => { const r=a.getBoundingClientRect(); return r.left < -1 || r.right > innerWidth + 1; }).map(a => ({text:a.textContent, x:a.getBoundingClientRect().x, width:a.getBoundingClientRect().width}))
       })`);
       assert.ok(result.scrollWidth <= result.clientWidth + 1, `${locale} ${width}: horizontal overflow (${result.scrollWidth}/${result.clientWidth})`);
-      assert.equal(result.lang, locale); assert.equal(result.h1, 1); assert.equal(result.sections, 7);
+      assert.equal(result.lang, locale); assert.equal(result.h1, 1); assert.equal(result.sections, 8);
       assert.ok(result.images, `${locale} ${width}: images loaded`);
       assert.ok(result.fonts, `${locale} ${width}: fonts loaded`);
       assert.deepEqual(result.clippedLinks, [], `${locale} ${width}: links within viewport`);
       results.push({ locale, width, ...result });
-      console.log(`PASS ${locale} ${width}px: no horizontal overflow, 7 sections, images and links`);
+      console.log(`PASS ${locale} ${width}px: no horizontal overflow, 8 sections, images and links`);
       if (width === 1440 || width === 390 || (width === 320 && locale === "en")) {
         await screenshot(`${locale}-${width}-viewport`);
         await screenshot(`${locale}-${width}-full`, true);

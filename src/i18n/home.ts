@@ -1,12 +1,11 @@
 import type { Locale } from "./config";
 
 type SectionCopy = { eyebrow: string; title: string; description: string };
-type DestinationCopy = { name: string; category: string; description: string };
 type HomeDictionary = {
   metaDescription: string;
   hero: { eyebrow: string; title: string; accent: string; description: string; primary: string; secondary: string; location: string; visualLabel: string; caption: string; scroll: string };
   introduction: SectionCopy & { link: string; note: string; sideTitle: string; sideDescription: string };
-  destinations: SectionCopy & { all: string; link: string; items: [DestinationCopy, DestinationCopy, DestinationCopy] };
+  destinations: SectionCopy & { all: string };
   packages: SectionCopy;
   benefits: SectionCopy & { items: { title: string; description: string }[] };
   inspiration: SectionCopy & { label: string; visualLabel: string; link: string; caption: string };
@@ -34,19 +33,14 @@ const homeDictionaries: Record<Locale, HomeDictionary> = {
     destinations: {
       eyebrow: "Pilihan inspirasi", title: "Tiga sudut Batam untuk cerita Anda.",
       description: "Kenali beberapa tujuan wisata Batam. Pilihan ini adalah inspirasi destinasi, bukan konfirmasi rute atau layanan yang tersedia.",
-      all: "Semua destinasi", link: "Lihat halaman destinasi",
-      items: [
-        { name: "Jembatan Barelang", category: "Ikon Batam", description: "Perspektif kepulauan dari salah satu ikon Batam." },
-        { name: "Pantai Nongsa", category: "Pesisir & pantai", description: "Inspirasi jeda di kawasan pantai Batam." },
-        { name: "Pulau Abang", category: "Jelajah pulau", description: "Kenali sisi bahari dalam rencana perjalanan Anda." },
-      ],
+      all: "Semua destinasi",
     },
     packages: {
       eyebrow: "Rencana perjalanan", title: "Temukan gaya liburan Anda.",
       description: "Koleksi konsep untuk membantu membayangkan perjalanan berikutnya. Paket resmi, durasi, fasilitas, dan ketersediaan masih menunggu konfirmasi.",
     },
     benefits: {
-      eyebrow: "Why choose us", title: "Rencana yang jelas. Pilihan yang terasa pas.",
+      eyebrow: "Mengapa memilih kami", title: "Rencana yang jelas. Pilihan yang terasa pas.",
       description: "Hal-hal yang layak Anda pertimbangkan saat memilih perjalanan. Detail layanan Anggun AR akan dilengkapi setelah dikonfirmasi.",
       items: [
         { title: "Mulai dari minat Anda", description: "Pilih suasana kota, pantai, atau pulau sebagai arah awal perjalanan." },
@@ -62,8 +56,8 @@ const homeDictionaries: Record<Locale, HomeDictionary> = {
     },
     final: {
       eyebrow: "Cerita berikutnya", title: "Mulai bayangkan perjalanan Anda.",
-      description: "Jelajahi konsep wisata Batam atau kunjungi halaman kontak untuk melihat pembaruan informasi resmi.",
-      primary: "Lihat konsep paket", secondary: "Halaman kontak", note: "Paket dan kanal kontak resmi sedang dipersiapkan. Pemesanan belum tersedia.",
+      description: "Jelajahi inspirasi wisata Batam atau kunjungi halaman kontak untuk berkonsultasi langsung dengan tim kami.",
+      primary: "Lihat konsep paket", secondary: "Halaman kontak", note: "Paket resmi sedang dipersiapkan. Konsultasi tersedia melalui kontak resmi; website tidak memproses pemesanan otomatis.",
     },
     navigation: { menu: "Buka menu", close: "Tutup menu", cta: "Jelajahi paket", explore: "Jelajahi", company: "Perusahaan", legal: "Informasi", footer: "Inspirasi wisata dan perjalanan di Batam, Kepulauan Riau, untuk cerita berikutnya.", location: "Fokus perjalanan · Batam, Indonesia", availability: "Website sedang dikembangkan · Informasi layanan menunggu konfirmasi" },
   },
@@ -83,12 +77,7 @@ const homeDictionaries: Record<Locale, HomeDictionary> = {
     },
     destinations: {
       eyebrow: "Places to imagine", title: "Three sides of Batam. Your own story.",
-      description: "Discover a few of Batam's destinations. These are travel inspirations, rather than confirmation of available routes or services.", all: "All destinations", link: "View destinations page",
-      items: [
-        { name: "Barelang Bridge", category: "Batam landmark", description: "An island perspective from one of Batam's landmarks." },
-        { name: "Nongsa Beach", category: "Coast & beach", description: "Inspiration for a pause along Batam's coast." },
-        { name: "Abang Island", category: "Island discovery", description: "Explore a maritime perspective for your travel plans." },
-      ],
+      description: "Discover a few of Batam's destinations. These are travel inspirations, rather than confirmation of available routes or services.", all: "All destinations",
     },
     packages: {
       eyebrow: "Travel concepts", title: "Find your kind of getaway.",
@@ -110,12 +99,12 @@ const homeDictionaries: Record<Locale, HomeDictionary> = {
     },
     final: {
       eyebrow: "Your next chapter", title: "Start imagining your next journey.",
-      description: "Explore Batam travel concepts or visit the contact page for updates to official information.",
-      primary: "View trip concepts", secondary: "Contact page", note: "Official packages and contact channels are being prepared. Booking is not available yet.",
+      description: "Explore Batam travel inspiration or visit the contact page to discuss your plans with our team.",
+      primary: "View trip concepts", secondary: "Contact page", note: "Official packages are being prepared. Inquiries are available through our official contacts; this website does not process automatic bookings.",
     },
     navigation: { menu: "Open menu", close: "Close menu", cta: "Explore packages", explore: "Explore", company: "Company", legal: "Information", footer: "Travel inspiration in Batam, Riau Islands, for your next chapter.", location: "Travel focus · Batam, Indonesia", availability: "Website in development · Service information awaiting confirmation" },
   },
 };
 
 export function getHomeDictionary(locale: Locale): HomeDictionary { return homeDictionaries[locale]; }
-export type { HomeDictionary, DestinationCopy };
+export type { HomeDictionary };

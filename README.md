@@ -1,5 +1,11 @@
 # Anggun AR Sukses Abadi
 
+Audit Phase 5, temuan terbuka, gate pengujian, serta monitoring/rollback: [Production readiness](docs/PRODUCTION_READINESS_AUDIT.md). Build lokal bukan izin deployment; konten kontak/legal/paket dan domain resmi masih membutuhkan konfirmasi.
+
+Tindak lanjut Range dan dependency: [Phase 5.1 technical hardening](docs/PHASE_5_1_TECHNICAL_HARDENING.md). `node scripts/verify-video-range.mjs` menguji boundary/conditional dan byte file pada TEST_ORIGINS; sudah termasuk `npm run test:production`. Advisory development tetap dilaporkan selama belum ada patch aman.
+
+Phase 4 Destinations & Gallery tersedia di `/id/destinations`, `/en/destinations`, `/id/gallery` dan `/en/gallery`. Detail contoh: `/id/destinations/barelang-bridge`. Destinasi adalah informasi wisata, bukan penawaran paket; galeri masih empty state sampai foto berizin tersedia. Panduan: [Destinations](docs/DESTINATIONS.md), [Gallery](docs/GALLERY.md).
+
 Phase 3 katalog/detail paket telah ditambahkan. Panduan data bilingual, itinerary, tiga foto lokal, draft preview development dan publikasi: [docs/TOUR_PACKAGES.md](docs/TOUR_PACKAGES.md). Belum ada paket resmi published; production menampilkan empty state, bukan contoh DEMO. Tidak ada backend booking atau deployment.
 
 Website travel dengan Next.js App Router, TypeScript, Tailwind CSS, ESLint, dan Lucide React. Phase 2 menambahkan homepage Modern Tropical + Premium bilingual, design system, header/footer, dan navigasi mobile. Informasi layanan masih sementara; tidak menerima booking.
@@ -25,16 +31,28 @@ npm run build
 npm run start
 ```
 
-`npm run start` memakai hasil build, bukan deployment. Tidak ada environment variable atau akun layanan eksternal yang diperlukan. Plus Jakarta Sans dan Inter memakai next/font/google: font diunduh saat build, lalu disajikan lokal ke pengunjung. Build pertama memerlukan akses Google Fonts. CSS menyediakan fallback sistem.
+Regresi production tanpa dependency tambahan (gunakan Chromium dengan CDP loopback dan profil uji terpisah; server `next start` harus sudah berjalan):
+
+```powershell
+npm run test:unit
+$env:TEST_BASE_URL = 'http://localhost:3100'
+$env:TEST_ORIGINS = 'http://localhost:3100,http://192.168.1.29:3100'
+$env:BROWSER_DEBUG_URL = 'http://127.0.0.1:9333'
+npm run test:production
+```
+
+Sesuaikan IP dengan interface aktif. Contoh server port terpisah: `npm run start -- --port 3100 --hostname 0.0.0.0`. Runner menyimpan log/status per skrip di `artifacts/production-readiness/`; exit nonzero berarti ada gate yang gagal, termasuk temuan yang sengaja belum diperbaiki. `npm run test:recovery` memakai komponen error aktual dalam harness React terisolasi dengan adapter router, bukan injeksi kegagalan hosting. Skrip fixture gallery/gambar dijalankan terpisah pada development; jangan menjalankan build selama fixture terpasang.
+
+`npm run start` memakai hasil build, bukan deployment. Tidak ada secret atau akun layanan eksternal yang diperlukan. `.env.example` berisi `NEXT_TELEMETRY_DISABLED=1` untuk menonaktifkan telemetry bawaan Next.js; gunakan nilai ini juga pada environment CI/hosting. Audit membuat `.env.local` terabaikan dengan nilai yang sama; konfigurasi telemetry global pengguna tidak diubah. Plus Jakarta Sans dan Inter memakai next/font/google: font diunduh saat build, lalu disajikan lokal ke pengunjung. Build pertama memerlukan akses Google Fonts. CSS menyediakan fallback sistem.
 
 Dengan server production lokal berjalan, jalankan `node scripts/verify-routes.mjs` di terminal kedua untuk menguji 30 respons HTTP, metadata, atribut bahasa, dan tautan perpindahan bahasa. Ini belum menggantikan pengujian interaksi browser atau inspeksi tampilan pada perangkat nyata.
 
 ## Routing dan konten
 
-- `/id` dan `/en`: homepage Phase 2 dengan tujuh section dan konten bilingual.
-- Tambahkan `/destinations`, `/packages`, `/gallery`, `/booking`, `/about`, `/contact`, `/faq`, `/privacy`, atau `/terms` setelah locale untuk halaman placeholder.
+- `/id` dan `/en`: homepage dengan delapan section, termasuk cinematic, dan konten bilingual.
+- `/destinations`, `/destinations/[slug]`, `/gallery`, `/packages`, `/packages/[slug]`, dan `/about` memiliki halaman khusus. `/booking`, `/contact`, `/faq`, `/privacy`, dan `/terms` tetap placeholder tanpa backend.
 - Bahasa tidak ditebak dari browser; fallback awal selalu `id`. Locale yang tidak didukung dan slug yang tidak dikenal menghasilkan 404, bukan pengalihan diam-diam.
-- Pemilih bahasa mempertahankan slug halaman. Query dan hash tidak dipertahankan; Phase 1 belum menggunakan keduanya untuk konten.
+- Pemilih bahasa mempertahankan slug serta query filter dikenal untuk paket/destinasi/galeri dan konteks paket inquiry. Hash tidak dipertahankan.
 - Kamus terjemahan: `src/i18n/dictionaries.ts`. Tipe kamus memastikan kedua bahasa memiliki key yang sama.
 - Kamus homepage dan navigasi Phase 2: `src/i18n/home.ts`. Gambar konsep lokal: `public/images/placeholders` (bukan foto lokasi).
 - Hero memakai carousel tiga slide: konten ID/EN di `src/i18n/hero.ts`, konfigurasi gambar/link/focal point di `src/data/hero-slides.ts`. Petunjuk foto: `public/images/hero/README.md`. Saat ini seluruh foto `null`, sehingga gradient placeholder ditampilkan tanpa request gambar yang hilang.
@@ -67,7 +85,11 @@ scripts/verify-browser.mjs
 public/images/placeholders/
 ```
 
-Folder data, hooks, dan backend belum dibuat karena belum digunakan. Seluruh halaman placeholder berbagi satu route bertipe untuk menghindari pengulangan; route fitur dapat dipisahkan saat memiliki perilaku khusus.
+Data lokal bertipe berada di `src/data`, model di `src/types`; tidak ada backend. Halaman placeholder berbagi satu route, sementara About, paket, destinasi dan galeri memiliki route fitur khusus.
+
+Fallback error route berada di `src/app/[locale]/error.tsx`, fallback root di `src/app/global-error.tsx`, dan pesan di `src/i18n/errors.ts`. Keduanya memakai pesan umum tanpa detail exception. `next.config.ts` menambahkan `nosniff` dan `strict-origin-when-cross-origin`; belum mengaktifkan CSP/HSTS. Favicon kosong secara eksplisit mencegah request 404 sampai ikon resmi disetujui. Tidak ada layanan monitoring atau telemetry baru yang diaktifkan.
+
+Fallback framework untuk error file statis berada di `src/pages/_error.tsx` dan `src/pages/404.tsx`, memakai komponen standar Next agar status 416 tidak berubah menjadi 500. Halaman bisnis tetap App Router dan aturan locale/404 proxy dipertahankan. `src/lib/video-range.ts` hanya menormalkan GET suffix di atas ukuran file pada URL H.264 aktif; streaming/cache/range lainnya tetap Next.
 
 ## Verifikasi browser opsional
 

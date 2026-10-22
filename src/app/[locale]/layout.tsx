@@ -14,6 +14,8 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakart
 export const metadata: Metadata = {
   title: { default: business.name, template: `%s | ${business.name}` },
   robots: { index: false, follow: false },
+  // No approved favicon yet; do not request an absent /favicon.ico.
+  icons: { icon: "data:," },
 };
 
 export function generateStaticParams() {
@@ -28,7 +30,7 @@ export default async function LocaleLayout({ children, params }: {
   if (!isLocale(locale)) notFound();
   const t = getDictionary(locale);
   return (
-    <html lang={locale}>
+    <html lang={locale} data-scroll-behavior="smooth">
       <body className={`${inter.variable} ${jakarta.variable} flex min-h-screen flex-col antialiased`}>
         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-white focus:p-3">{t.skip}</a>
         <Header locale={locale} />

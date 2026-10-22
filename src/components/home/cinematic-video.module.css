@@ -1,0 +1,14 @@
+.section { background: var(--color-navy); color: #fff; border-block: 1px solid #33526a; }
+.frame { position: relative; isolation: isolate; display: grid; align-items: center; width: 100%; min-height: clamp(24rem, 48vw, 48rem); overflow: hidden; }
+.content { position: relative; z-index: 2; padding-block: clamp(3.5rem, 7vw, 6.5rem); }
+.heading { position: relative; z-index: 2; max-width: 46rem; }
+.eyebrow { display: flex; align-items: center; gap: .75rem; color: #d4f1f4; font-size: .6875rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+.eyebrow::before { content: ""; width: 1.75rem; height: 1px; background: currentColor; flex-shrink: 0; }
+.heading h2 { margin-top: 1.25rem; font-size: clamp(1.75rem, 3.5vw, 3rem); font-weight: 600; line-height: 1.2; letter-spacing: -.025em; }
+.description { margin-top: 1.25rem; max-width: 40rem; color: #e8f3f6; line-height: 1.9; }
+.poster, .video { object-fit: cover; }
+.fallback, .player, .video, .overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fallback { background: var(--color-navy-secondary); }
+.fallback::before, .fallback::after { content: ""; position: absolute; width: 110%; height: 70%; bottom: -40%; left: -20%; border: 1px solid rgb(84 182 194 / 35%); border-radius: 50%; transform: rotate(-12deg); }
+.fallback::after { left: 20%; bottom: -45%; background: rgb(8 127 140 / 12%); }
+.overlay { z-index: 1; background: rgb(16 42 67 / 70%); }

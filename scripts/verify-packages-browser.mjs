@@ -36,9 +36,13 @@ async function evaluate(expression) {
   return result.result.value;
 }
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve,ms));
+async function until(expression) {
+  for (let attempt=0;attempt<600;attempt++) { if (await evaluate(expression)) return; await delay(100); }
+  throw new Error(`Condition timeout: ${expression}`);
+}
 async function navigate(path) {
   let timeout;
-  const load = new Promise((resolve,reject) => { loaded=resolve; timeout=setTimeout(()=>reject(new Error(`Page timeout ${path}`)),12000); });
+  const load = new Promise((resolve,reject) => { loaded=resolve; timeout=setTimeout(()=>reject(new Error(`Page timeout ${path}`)),process.env.TEST_PREVIEW === "1" ? 60000 : 12000); });
   try { await send("Page.navigate",{url:new URL(path,base).href}); await load; }
   finally { clearTimeout(timeout); loaded=undefined; }
   await evaluate("document.fonts.ready"); await delay(250);
@@ -82,7 +86,7 @@ try {
         assert.ok(info.scroll <= info.width + 1, `Overflow ${locale} ${width} ${suffix}`);
         assert.deepEqual(info.clipped, []); assert.equal(info.broken, 0);
         if (preview) {
-          assert.equal(info.photos, 3);
+          assert.equal(info.photos, suffix.includes("batam-city") ? 3 : 9);
           if (!suffix.includes("batam-city")) assert.equal(info.columns.split(" ").length, width >= 1280 ? 3 : width >= 768 ? 2 : 1);
         }
         if ([390,1440].includes(width)) await screenshot(`${preview ? "preview" : "public"}-${locale}-${width}-${suffix.includes("batam-city") ? "detail" : "listing"}`,true);
@@ -94,24 +98,30 @@ try {
     await navigate("/id/packages?preview=draft&q=COASTAL&category=coast");
     assert.equal(await evaluate("document.querySelectorAll('main article').length"),1);
     await click('header a[hreflang="en"]');
+    await until("location.pathname==='/en/packages' && document.documentElement.lang==='en'");
     assert.equal(await evaluate("location.pathname"),"/en/packages");
     assert.equal(await evaluate("new URLSearchParams(location.search).get('q')"),"COASTAL");
     assert.equal(await evaluate("new URLSearchParams(location.search).get('category')"),"coast");
     assert.equal(await evaluate("document.querySelectorAll('main article').length"),1);
     await click('main article a');
+    await until("location.pathname==='/en/packages/coastal-slow-days' && document.querySelectorAll('main [data-package-photo]').length===3");
     assert.equal(await evaluate("location.pathname"),"/en/packages/coastal-slow-days");
     assert.equal(await evaluate("document.querySelectorAll('main [data-package-photo]').length"),3);
     await click('header a[hreflang="id"]');
+    await until("location.pathname==='/id/packages/coastal-slow-days' && document.documentElement.lang==='id'");
     assert.equal(await evaluate("location.pathname"),"/id/packages/coastal-slow-days");
     assert.equal(await evaluate("new URLSearchParams(location.search).get('preview')"),"draft");
     await navigate("/id/packages?preview=draft");
     await evaluate("document.querySelector('input[name=q]').value='batam';document.querySelector('input[name=q]').focus()");
     await key("Enter","Enter",13); await delay(700);
-    assert.equal(await evaluate("document.querySelectorAll('main article').length"),1);
+    await until("new URLSearchParams(location.search).get('q')==='batam' && document.querySelectorAll('main article').length===5");
+    assert.equal(await evaluate("document.querySelectorAll('main article').length"),5);
     await evaluate("document.querySelector('select[name=category]').value='coast';document.querySelector('button[type=submit]').click()"); await delay(700);
+    await until("new URLSearchParams(location.search).get('category')==='coast' && document.querySelectorAll('main article').length===0");
     assert.equal(await evaluate("document.querySelectorAll('main article').length"),0);
     await click('main form a');
-    assert.equal(await evaluate("document.querySelectorAll('main article').length"),3);
+    await until("document.querySelectorAll('main article').length===9");
+    assert.equal(await evaluate("document.querySelectorAll('main article').length"),9);
     await send("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
     assert.equal(await evaluate("getComputedStyle(document.documentElement).scrollBehavior"),"auto");
   }

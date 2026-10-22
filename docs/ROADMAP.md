@@ -22,7 +22,11 @@ Disetujui pemilik 20 Oktober 2026. Katalog dan detail bilingual, filter query GE
 
 Rancang PostgreSQL/Prisma, validasi server, perlindungan spam, kebijakan data, dan alur inquiry/booking. Field yang direncanakan: nama, email, WhatsApp, paket, tanggal perjalanan, peserta, dan permintaan tambahan. Integrasi WhatsApp hanya setelah nomor resmi tersedia. Inquiry bukan konfirmasi booking otomatis.
 
-## Phase 4 — admin dan media (menunggu persetujuan)
+## Phase 4 — Destinations & Gallery Development
+
+Disetujui dan diimplementasikan lokal: destinasi terpusat, katalog/detail ID/EN, sumber geografis terverifikasi, tiga slot foto lokal, pencarian/kategori GET, paket terkait published non-demo, integrasi Featured Destinations, galeri fleksibel dan lightbox aksesibel. Foto resmi menunggu pemilik; galeri kosong secara jujur. Validasi di `VALIDATION.md`, panduan di `DESTINATIONS.md`/`GALLERY.md`. Tidak melanjutkan Phase 5 atau membuat commit/push/deployment otomatis.
+
+## Admin dan media — tahap terpisah, belum disetujui
 
 Autentikasi dan otorisasi admin; kelola destinasi, paket, itinerary, galeri, inquiry, booking, dan pengaturan website. Evaluasi Cloudinary atau object storage untuk media, dengan konfigurasi dan biaya yang disetujui.
 

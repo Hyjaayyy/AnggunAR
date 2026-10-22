@@ -7,6 +7,14 @@ export type TourPackage = {
   status: "draft" | "published";
   demo: boolean;
   price: { amount: number; currency: "IDR" } | null;
+  planning?: {
+    verification: "unverified";
+    indicativePricePerPerson: number;
+    participantBasis: number | null;
+    durationNights: number;
+    researchedOn: string;
+    sourceUrls: readonly string[];
+  };
   durationDays: number | null;
   location: { id: string; label: Translated } | null;
   category: { id: string; label: Translated };
