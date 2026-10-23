@@ -6,7 +6,7 @@ Tindak lanjut Range dan dependency: [Phase 5.1 technical hardening](docs/PHASE_5
 
 Phase 4 Destinations & Gallery tersedia di `/id/destinations`, `/en/destinations`, `/id/gallery` dan `/en/gallery`. Detail contoh: `/id/destinations/barelang-bridge`. Destinasi adalah informasi wisata, bukan penawaran paket; galeri masih empty state sampai foto berizin tersedia. Panduan: [Destinations](docs/DESTINATIONS.md), [Gallery](docs/GALLERY.md).
 
-Phase 3 katalog/detail paket telah ditambahkan. Panduan data bilingual, itinerary, tiga foto lokal, draft preview development dan publikasi: [docs/TOUR_PACKAGES.md](docs/TOUR_PACKAGES.md). Belum ada paket resmi published; production menampilkan empty state, bukan contoh DEMO. Tidak ada backend booking atau deployment.
+Phase 3 katalog/detail paket telah ditambahkan. Panduan data bilingual, itinerary, tiga foto lokal, draft preview development dan publikasi: [docs/TOUR_PACKAGES.md](docs/TOUR_PACKAGES.md). Enam konsep berstatus `offered` tersedia di katalog publik ID/EN sebagai penawaran awal dengan estimasi, bukan harga resmi. Tiga demo tetap draft internal; booking tetap terbatas pada paket published yang terkonfirmasi. Tidak ada backend booking atau deployment.
 
 Website travel dengan Next.js App Router, TypeScript, Tailwind CSS, ESLint, dan Lucide React. Phase 2 menambahkan homepage Modern Tropical + Premium bilingual, design system, header/footer, dan navigasi mobile. Informasi layanan masih sementara; tidak menerima booking.
 

@@ -1,0 +1,23 @@
+.track { min-width: 0; }
+
+@media (width < 768px) {
+  .track {
+    grid-auto-flow: column;
+    grid-auto-columns: 86%;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 4px;
+    padding: 4px 4px 16px;
+    margin: -4px -4px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #087f8c #cddfe6;
+  }
+  .track > article { scroll-snap-align: start; }
+  .indicator { min-height: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track { scroll-behavior: auto; }
+}

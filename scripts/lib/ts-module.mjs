@@ -13,6 +13,8 @@ export function tsModuleLoader({ env = { NODE_ENV: "production" }, requestHeader
     const source = ts.transpileModule(readFileSync(absolute, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText;
     vm.runInNewContext(source, { exports, Headers, URLSearchParams, process: { env, cwd: () => process.cwd() }, require: name => {
       if (name === "server-only") return {};
+      // CSS is validated by the production build and browser, not the isolated TS loader.
+      if (name.endsWith(".module.css")) return {};
       if (name === "next/headers") return { headers: async () => requestHeaders };
       if (Object.hasOwn(modules, name)) return modules[name];
       if (name.startsWith("@/") || name.startsWith(".")) {

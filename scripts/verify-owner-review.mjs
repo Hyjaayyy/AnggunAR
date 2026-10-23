@@ -33,29 +33,31 @@ assert.equal(await review.packageReviewAccess({}), null);
 const access = await review.packageReviewAccess({ preview: "draft" });
 assert.ok(access); assert.equal(review.isOwnerReviewAccess(access), true);
 assert.equal(lib.getPackages(access).length, 9);
-assert.equal(lib.getPackages().length, 0);
-assert.equal(lib.getPackages(true).length, 0);
-assert.equal(lib.getPackages({}).length, 0);
-assert.equal(lib.getPackage("batam-city-highlights"), undefined, "Booking resolver never receives review authorization");
-assert.equal(lib.getPackage("batam-city-highlights", access)?.status, "draft");
+assert.equal(lib.getPackages().length, 6);
+assert.equal(lib.getPackages(true).length, 6);
+assert.equal(lib.getPackages({}).length, 6);
+assert.equal(lib.getBookingPackage("batam-city-highlights"), undefined, "Booking resolver never receives review authorization");
+assert.equal(lib.getPackage("batam-city-highlights", access)?.status, "offered");
 const anonymousLoad = tsModuleLoader({ env, requestHeaders: new Headers({ "x-forwarded-proto": "https", "x-owner-review-authorized": "true" }) });
 assert.equal(await anonymousLoad("src/lib/owner-review.ts").packageReviewAccess({ preview: "draft" }), null);
-assert.equal(anonymousLoad("src/lib/tour-packages.ts").getPackages(access).length, 0, "Foreign capability cannot be forged or replayed into another module instance");
+assert.equal(anonymousLoad("src/lib/tour-packages.ts").getPackages(access).length, 6, "Foreign capability cannot be forged or replayed into another module instance");
 const detail = load("src/app/[locale]/packages/[slug]/page.tsx");
 const anonymousDetail = anonymousLoad("src/app/[locale]/packages/[slug]/page.tsx");
 const proxy = load("src/proxy.ts").proxy;
 for (const locale of ["id", "en"]) {
-  const props = { params: Promise.resolve({ locale, slug: "batam-city-highlights" }), searchParams: Promise.resolve({ preview: "draft" }) };
-  assert.ok((await detail.generateMetadata(props)).title.includes("Batam City Highlights"));
+  const props = { params: Promise.resolve({ locale, slug: "batam-city-escape" }), searchParams: Promise.resolve({ preview: "draft" }) };
+  assert.ok((await detail.generateMetadata(props)).title.includes("Batam City Escape"));
   await assert.rejects(() => anonymousDetail.generateMetadata(props), /NEXT_HTTP_ERROR_FALLBACK;404/);
   await assert.rejects(() => anonymousDetail.default(props), /NEXT_HTTP_ERROR_FALLBACK;404/);
   const listing = await anonymousLoad("src/app/[locale]/packages/page.tsx").default({ params: Promise.resolve({ locale }), searchParams: Promise.resolve({ preview: "draft" }) });
   function text(n) { return typeof n === "string" ? n : Array.isArray(n) ? n.map(text).join(" ") : n && typeof n === "object" ? text(n.props?.children) : ""; }
-  assert.ok(!text(listing).includes("Batam City Highlights")); checks++;
+  assert.ok(!text(listing).includes("Batam City Escape")); checks++;
+  assert.equal((await proxy(new NextRequest(`https://public.example/${locale}/packages/batam-city-highlights`))).status, 200);
+  assert.equal((await proxy(new NextRequest(`https://public.example/${locale}/packages/batam-city-escape`))).status, 404);
   const denied = await proxy(new NextRequest(`https://review.example/${locale}/packages?preview=draft`));
   assert.equal(denied.status, 401); assert.ok(denied.headers.get("www-authenticate").startsWith("Basic"));
   assert.ok(denied.headers.get("cache-control").includes("no-store"));
-  const allowed = await proxy(new NextRequest(`https://review.example/${locale}/packages/batam-city-highlights?preview=draft`, { headers: requestHeaders }));
+  const allowed = await proxy(new NextRequest(`https://review.example/${locale}/packages/batam-city-escape?preview=draft`, { headers: requestHeaders }));
   assert.equal(allowed.status, 200); assert.ok(allowed.headers.get("cache-control").includes("no-store")); assert.ok(allowed.headers.get("vary").includes("Authorization"));
   assert.equal((await proxy(new NextRequest(`http://review.example/${locale}/packages?preview=draft`, { headers: requestHeaders }))).status, 403);
   const booking = await load("src/app/[locale]/[slug]/page.tsx").default({ params: Promise.resolve({ locale, slug: "booking" }), searchParams: Promise.resolve({ package: "batam-city-highlights", preview: "draft" }) });
@@ -64,7 +66,7 @@ for (const locale of ["id", "en"]) {
 env.OWNER_REVIEW_PASSWORD = randomBytes(36).toString("base64url");
 assert.equal(review.isOwnerReviewAccess(access), false, "Credential rotation invalidates an old capability");
 env.VERCEL_ENV = "production";
-assert.equal(lib.getPackages(access).length, 0, "Public production denies even previously authorized access");
+assert.equal(lib.getPackages(access).length, 6, "Public production denies even previously authorized access");
 console.log(`PASS owner-review ${checks} policy/anonymous cases plus credential verification, HTTPS, opaque resolver authorization, metadata, booking isolation and rotation; no real credentials used`);
 
 if (process.env.TEST_BASE_URL) {
@@ -73,9 +75,9 @@ if (process.env.TEST_BASE_URL) {
     for (const headers of [{}, { "x-owner-review-authorized": "true", "x-forwarded-proto": "https" }, { authorization }]) {
       const response = await fetch(url, { headers }); const html = await response.text();
       assert.equal(response.status, 200, "Default-off public listing stays public without drafts");
-      assert.ok(!html.includes("Batam City Highlights"));
+      assert.ok(!html.includes("Batam City Escape"));
     }
-    const detailResponse = await fetch(`${process.env.TEST_BASE_URL}/${locale}/packages/batam-city-highlights?preview=draft`);
+    const detailResponse = await fetch(`${process.env.TEST_BASE_URL}/${locale}/packages/batam-city-escape?preview=draft`);
     assert.equal(detailResponse.status, 404);
   }
   console.log("PASS live default-off anonymous/forged-header HTTP and draft detail 404 ID/EN");

@@ -71,7 +71,7 @@ try {
   for (const width of [320,390,768,1024,1440,1920]) {
     await send("Emulation.setDeviceMetricsOverride", { width, height: 900, deviceScaleFactor: 1, mobile: false });
     for (const locale of ["id", "en"]) {
-      for (const suffix of preview ? ["/packages?preview=draft", "/packages/batam-city-escape?preview=draft"] : ["/packages"]) {
+      for (const suffix of preview ? ["/packages?preview=draft", "/packages/batam-city-escape?preview=draft"] : ["/packages", "/packages/batam-city-highlights"]) {
         await navigate(`/${locale}${suffix}`);
         const info = await evaluate(`(() => ({
           width:document.documentElement.clientWidth,scroll:document.documentElement.scrollWidth,
@@ -80,11 +80,15 @@ try {
           cards:document.querySelectorAll('main article').length,
           columns:getComputedStyle(document.querySelector('main article')?.parentElement ?? document.querySelector('main')).gridTemplateColumns,
           broken:[...document.images].filter(i=>i.complete && i.naturalWidth===0).length,
-          clipped:[...document.querySelectorAll('main h1,main h2,main h3,main p,main input,main select')].filter(e=>{const r=e.getBoundingClientRect();return r.left < -1 || r.right > innerWidth+1}).map(e=>e.textContent)
+          clipped:[...document.querySelectorAll('main h1,main h2,main h3,main p,main input,main select')].filter(e=>{const r=e.getBoundingClientRect();return !e.closest('[data-package-carousel]') && (r.left < -1 || r.right > innerWidth+1)}).map(e=>e.textContent)
         }))()`);
         assert.equal(info.lang, locale); assert.equal(info.h1,1);
         assert.ok(info.scroll <= info.width + 1, `Overflow ${locale} ${width} ${suffix}`);
         assert.deepEqual(info.clipped, []); assert.equal(info.broken, 0);
+        if (!preview) {
+          assert.equal(info.photos, suffix.includes("batam-city-highlights") ? 3 : 6);
+          assert.equal(info.cards, suffix.includes("batam-city-highlights") ? 0 : 6);
+        }
         if (preview) {
           assert.equal(info.photos, suffix.includes("batam-city") ? 3 : 9);
           if (!suffix.includes("batam-city")) assert.equal(info.columns.split(" ").length, width >= 1280 ? 3 : width >= 768 ? 2 : 1);
@@ -97,6 +101,7 @@ try {
   if (preview) {
     await navigate("/id/packages?preview=draft&q=COASTAL&category=coast");
     assert.equal(await evaluate("document.querySelectorAll('main article').length"),1);
+    await until("new URL(document.querySelector('header a[hreflang=\"en\"]').href).searchParams.get('q')===new URLSearchParams(location.search).get('q')");
     await click('header a[hreflang="en"]');
     await until("location.pathname==='/en/packages' && document.documentElement.lang==='en'");
     assert.equal(await evaluate("location.pathname"),"/en/packages");
@@ -125,9 +130,23 @@ try {
     await send("Emulation.setEmulatedMedia",{features:[{name:"prefers-reduced-motion",value:"reduce"}]});
     assert.equal(await evaluate("getComputedStyle(document.documentElement).scrollBehavior"),"auto");
   }
+  if (!preview) {
+    await navigate("/id/packages?q=batam&destination=batam&duration=1");
+    assert.equal(await evaluate("document.querySelectorAll('main article').length"), 1);
+    await until("new URL(document.querySelector('header a[hreflang=\"en\"]').href).searchParams.get('q')===new URLSearchParams(location.search).get('q')");
+    await click('header a[hreflang="en"]');
+    await until("location.pathname==='/en/packages' && document.documentElement.lang==='en'");
+    assert.equal(await evaluate("new URLSearchParams(location.search).get('q')"), "batam");
+    assert.equal(await evaluate("document.querySelectorAll('main article').length"), 1);
+    await click('main article a[href^="/en/packages/"]');
+    await until("location.pathname==='/en/packages/batam-city-highlights'");
+    await click('header a[hreflang="id"]');
+    await until("location.pathname==='/id/packages/batam-city-highlights' && document.documentElement.lang==='id'");
+    assert.equal(await evaluate("document.querySelectorAll('main [data-package-photo]').length"), 3);
+  }
   assert.deepEqual(errors, []);
   await writeFile(`artifacts/phase3/${preview ? "preview" : "public"}-browser-results.json`, JSON.stringify({results,errors},null,2));
-  console.log(`PASS ${results.length} locale/viewport/page combinations; ${preview ? "filter form, reset, language/query, detail navigation, 3 photos, keyboard, reduced motion" : "public catalogue empty states"}; no captured console/hydration errors`);
+  console.log(`PASS ${results.length} locale/viewport/page combinations; ${preview ? "filter form, reset, language/query, detail navigation, 3 photos, keyboard, reduced motion" : "six public offers and detail"}; no captured console/hydration errors`);
 } finally {
   await fetch(`${debug}/json/close/${tab.id}`).catch(()=>{}); socket.close();
 }

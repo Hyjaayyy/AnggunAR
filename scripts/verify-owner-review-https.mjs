@@ -60,6 +60,10 @@ try {
     }
     const allowed = await request(`/${locale}/packages?preview=draft`, { authorization });
     assert.equal(allowed.status, 200); assert.ok(allowed.body.includes("Batam City Highlights"));
+    const internal = await request(`/${locale}/packages/batam-city-escape?preview=draft`, { authorization });
+    assert.equal(internal.status, 200); assert.ok(internal.body.includes("DEMO / DRAFT"));
+    assert.equal((await request(`/${locale}/packages/batam-city-escape?preview=draft`)).status, 401);
+    assert.equal((await request(`/${locale}/packages/batam-city-escape`)).status, 404);
     // Next replaces Vary with its RSC variants; the authoritative barrier is private/no-store.
     assert.ok(allowed.headers["cache-control"].includes("no-store")); assert.ok(allowed.headers["cache-control"].includes("private"));
     assert.ok(allowed.body.includes('content="noindex, nofollow"')); assert.ok(!allowed.body.includes(password));
@@ -80,8 +84,8 @@ try {
     await start(environment, enabled);
     for (const locale of ["id", "en"]) {
       const listing = await request(`/${locale}/packages?preview=draft`, { authorization });
-      assert.equal(listing.status, 200); assert.ok(!listing.body.includes("Batam City Highlights"));
-      assert.equal((await request(`/${locale}/packages/batam-city-highlights?preview=draft`, { authorization })).status, 404);
+      assert.equal(listing.status, 200); assert.ok(!listing.body.includes("Batam City Escape"));
+      assert.equal((await request(`/${locale}/packages/batam-city-escape?preview=draft`, { authorization })).status, 404);
       results.push({ environment, enabled, locale, draftHidden: true });
     }
     await stop();

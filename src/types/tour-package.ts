@@ -4,7 +4,7 @@ export type Translated = Record<Locale, string>;
 export type PackageImage = { src: string | null; alt: Translated; position: string };
 export type TourPackage = {
   slug: string;
-  status: "draft" | "published";
+  status: "draft" | "offered" | "published";
   demo: boolean;
   price: { amount: number; currency: "IDR" } | null;
   planning?: {

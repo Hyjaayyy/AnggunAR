@@ -4,7 +4,7 @@ import { ArrowLeft, FileClock } from "lucide-react";
 import { notFound } from "next/navigation";
 import { isLocale, locales } from "@/i18n/config";
 import { getDictionary, isPageSlug, pageSlugs } from "@/i18n/dictionaries";
-import { getPackage, type PackageQuery } from "@/lib/tour-packages";
+import { getBookingPackage, type PackageQuery } from "@/lib/tour-packages";
 import { getPackagesDictionary } from "@/i18n/packages";
 import { getContactDictionary } from "@/i18n/contact";
 import { whatsappHref } from "@/lib/contact";
@@ -31,7 +31,7 @@ export default async function PlaceholderPage({ params, searchParams }: Props) {
   const page = t.pages[slug];
   const query = await searchParams;
   const packageSlug = slug === "booking" && typeof query.package === "string" ? query.package : null;
-  const selectedPackage = packageSlug ? getPackage(packageSlug) : null;
+  const selectedPackage = packageSlug ? getBookingPackage(packageSlug) : null;
   const packagesCopy = getPackagesDictionary(locale);
   const contactCopy = getContactDictionary(locale);
   const notice = slug === "booking" ? contactCopy.bookingNote : slug === "privacy" || slug === "terms" ? t.legalPending : t.placeholder;

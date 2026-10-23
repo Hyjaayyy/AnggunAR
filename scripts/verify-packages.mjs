@@ -14,11 +14,11 @@ const official = { ...draft, slug: "test-only-official", demo: false, status: "p
 const data = [...tourPackages, official, { ...official, slug: "test-published-demo", demo: true }];
 for (const env of ["development", "production", "test"]) {
   const lib = await load("src/lib/tour-packages.ts", env, data);
-  assert.equal(lib.getPackages().length, 1);
+  assert.equal(lib.getPackages().length, 7);
   assert.equal(lib.getPackage(draft.slug), undefined);
   assert.equal(!!lib.reviewAccess, env === "development");
-  assert.equal(lib.getPackages(true).length, 1, "Boolean is not authorization");
-  assert.equal(lib.getPackages(lib.reviewAccess).length, env === "development" ? data.length : 1);
+  assert.equal(lib.getPackages(true).length, 7, "Boolean is not authorization");
+  assert.equal(lib.getPackages(lib.reviewAccess).length, env === "development" ? data.length : 7);
   assert.equal(lib.getPackage(draft.slug, lib.reviewAccess)?.slug, env === "development" ? draft.slug : undefined);
   for (const locale of ["id", "en"]) {
     assert.deepEqual(Array.from(lib.filterPackages(data, { q: "  BATAM CITY  " }, locale), p => p.slug).sort(), [draft.slug, "batam-city-highlights", official.slug, "test-published-demo"].sort());
@@ -33,7 +33,7 @@ for (const env of ["development", "production", "test"]) {
 }
 assert.equal(tourPackages.filter(p => p.demo).length, 3);
 assert.ok(tourPackages.filter(p => p.demo).every((p) => p.images.length === 3 && !p.price && !p.itinerary && !p.included && !p.excluded));
-assert.ok(tourPackages.every(p => p.status === "draft" && !p.price && !p.included && !p.excluded));
+assert.ok(tourPackages.every(p => (p.status === "draft" || p.status === "offered") && !p.price && !p.included && !p.excluded));
 console.log("PASS actual server logic: publication, production draft isolation, search, combined filters, image paths (isolated fixtures only)");
 
 const base = process.env.TEST_BASE_URL ?? "http://127.0.0.1:3000";
@@ -42,15 +42,15 @@ for (const locale of ["id", "en"]) {
   const listing = await fetch(`${base}/${locale}/packages`);
   assert.equal(listing.status, 200); const html = await listing.text();
   assert.ok(!html.includes("Batam City Escape"), "Public listing excludes drafts");
-  assert.ok(!html.includes('data-package-photo'), "Public empty state");
+  assert.equal((html.match(/<article/g) ?? []).length, 6, "Six public offers");
   for (const slug of [...tourPackages.map((p) => p.slug), "unknown-package"]) {
     for (const query of ["", "?preview=draft"]) {
       const res = await fetch(`${base}/${locale}/packages/${slug}${query}`);
-      assert.equal(res.status, dev && tourPackages.some((p) => p.slug === slug) && query ? 200 : 404);
+      assert.equal(res.status, tourPackages.some((p) => p.slug === slug && p.status === "offered") || (dev && tourPackages.some((p) => p.slug === slug) && query) ? 200 : 404);
       if (res.status === 200) {
         const detail = await res.text();
         assert.equal((detail.match(/<div[^>]*data-package-photo/g) ?? []).length, 3);
-        assert.ok(detail.includes("DEMO / DRAFT"));
+        assert.ok(detail.includes("DEMO / DRAFT") || detail.includes(locale === "id" ? "Paket dalam Penawaran" : "Initial offer"));
         assert.ok(!detail.includes('/booking?package='), "Draft cannot enter inquiry");
       }
     }

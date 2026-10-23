@@ -1,8 +1,9 @@
 import type { Locale } from "./config";
 
 const id = {
-  title: "Paket Wisata", description: "Kenali pilihan perjalanan dan rincian paket yang telah diterbitkan oleh Anggun AR Sukses Abadi.", home: "Beranda",
-  marketStatus: "Draft — belum diverifikasi", estimate: "Estimasi harga pasar — belum final", perPerson: "/orang", quote: "Minta Penawaran", conceptItinerary: "Konsep itinerary",
+  carouselHint: "Geser untuk melihat paket", carouselPosition: "Posisi paket",
+  title: "Paket Wisata", description: "Jelajahi katalog penawaran awal Anggun AR Sukses Abadi. Harga, fasilitas, dan ketersediaan perlu dikonfirmasi.", home: "Beranda",
+  marketStatus: "Paket dalam Penawaran - harga dan fasilitas perlu konfirmasi", estimate: "Estimasi mulai dari - belum final", perPerson: "/orang", quote: "Minta Penawaran via WhatsApp", conceptItinerary: "Konsep itinerary",
   previewDescription: "Pratinjau konsep perjalanan untuk ditinjau. Paket, harga dan ketersediaan belum disetujui sebagai penawaran resmi.",
   estimateNote: "Target perencanaan, bukan harga resmi atau jaminan ketersediaan. Dasar jumlah peserta belum ditetapkan. Hotel, makan, tiket, transportasi dan penyeberangan belum dikonfirmasi termasuk; rincian memerlukan persetujuan pemilik dan pemasok.",
   quoteNote: "Minta penawaran aktual dengan membahas tanggal dan jumlah peserta. Membuka WhatsApp tidak mengirim pesan atau mengonfirmasi pemesanan.",
@@ -16,8 +17,9 @@ const id = {
 };
 export type PackagesDictionary = typeof id;
 const en: PackagesDictionary = {
-  title: "Tour Packages", description: "Explore published journeys and package details from Anggun AR Sukses Abadi.", home: "Home",
-  marketStatus: "Draft — unverified", estimate: "Market price estimate — not final", perPerson: "/person", quote: "Request a Quote", conceptItinerary: "Concept itinerary",
+  carouselHint: "Swipe to explore packages", carouselPosition: "Package position",
+  title: "Tour Packages", description: "Explore the initial offer catalogue from Anggun AR Sukses Abadi. Prices, facilities and availability require confirmation.", home: "Home",
+  marketStatus: "Initial offer - prices and facilities require confirmation", estimate: "Estimated from - not final", perPerson: "/person", quote: "Request a Quote via WhatsApp", conceptItinerary: "Concept itinerary",
   previewDescription: "Travel concepts for review. Packages, pricing and availability have not been approved as official offers.",
   estimateNote: "A planning target, not an official price or availability guarantee. The participant basis has not been set. Hotels, meals, tickets, transport and crossings are not confirmed as included; details require owner and supplier approval.",
   quoteNote: "Request an actual quotation by discussing dates and participant numbers. Opening WhatsApp does not send a message or confirm a booking.",

@@ -8,9 +8,13 @@ import { isOwnerReviewAccess, type OwnerReviewAccess } from "@/lib/owner-review"
 
 export type PackageQuery = Record<string, string | string[] | undefined>;
 export function getPackages(access?: OwnerReviewAccess | null): readonly TourPackage[] {
-  return tourPackages.filter((p) => (p.status === "published" && !p.demo) || isOwnerReviewAccess(access));
+  return tourPackages.filter((p) => ((p.status === "published" || p.status === "offered") && !p.demo) || isOwnerReviewAccess(access));
 }
 export function getPackage(slug: string, access?: OwnerReviewAccess | null) { return getPackages(access).find((p) => p.slug === slug); }
+/** Booking remains restricted to confirmed, published, non-demo packages. */
+export function getBookingPackage(slug: string) {
+  return tourPackages.find((p) => p.slug === slug && p.status === "published" && !p.demo && !p.planning);
+}
 export function filterPackages(items: readonly TourPackage[], query: PackageQuery, locale: Locale) {
   const q = typeof query.q === "string" ? query.q.trim().toLocaleLowerCase(locale).slice(0, 200) : "";
   return items.filter((p) => (!q || p.content[locale].name.toLocaleLowerCase(locale).includes(q))
@@ -19,10 +23,10 @@ export function filterPackages(items: readonly TourPackage[], query: PackageQuer
     && (!query.duration || String(p.durationDays) === query.duration));
 }
 export function packagePrice(p: TourPackage, locale: Locale, fallback: string) {
-  const amount = isMarketDraft(p) ? p.planning?.indicativePricePerPerson : p.price?.amount;
+  const amount = isUnverifiedConcept(p) ? p.planning?.indicativePricePerPerson : p.price?.amount;
   return amount ? new Intl.NumberFormat(locale === "id" ? "id-ID" : "en-US", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(amount) : fallback;
 }
-export function isMarketDraft(p: TourPackage): boolean { return p.status === "draft" && !p.demo && p.planning?.verification === "unverified"; }
+export function isUnverifiedConcept(p: TourPackage): boolean { return (p.status === "draft" || p.status === "offered") && !p.demo && p.planning?.verification === "unverified"; }
 export function packageDuration(p: TourPackage, locale: Locale, fallback: string): string {
   if (!p.durationDays) return fallback;
   const nights = p.planning?.durationNights;

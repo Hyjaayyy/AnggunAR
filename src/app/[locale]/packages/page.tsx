@@ -1,3 +1,4 @@
+import { PackageList } from "@/components/packages/package-list";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -28,7 +29,7 @@ export default async function PackagesPage({ params, searchParams }: Props) {
     <section className="section-space ocean-mist" aria-label={t.title}><Container>
       {preview && <p className="mb-6 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">{t.preview}</p>}
       {items.length > 0 && <PackageFilters items={items} query={query} locale={locale} preview={preview} />}
-      {results.length > 0 ? <><h2 className="sr-only">{t.title}</h2><p className="mt-8 text-sm text-muted" role="status">{results.length} {t.results}</p><div className="mt-5 grid gap-6 md:grid-cols-2 xl:grid-cols-3">{results.map((item) => <TourPackageCard key={item.slug} item={item} locale={locale} preview={preview} />)}</div></>
+      {results.length > 0 ? <><h2 className="sr-only">{t.title}</h2><p className="mt-8 text-sm text-muted" role="status">{results.length} {t.results}</p><PackageList key={results.map((item) => item.slug).join(",")} count={results.length} label={t.title} hint={t.carouselHint} positionLabel={t.carouselPosition} className="mt-5">{results.map((item) => <TourPackageCard key={item.slug} item={item} locale={locale} preview={preview} />)}</PackageList></>
         : <div className="mt-6"><EmptyState title={items.length ? t.noResults : t.empty} description={items.length ? t.noResultsDescription : t.emptyDescription}><ButtonLink href={items.length ? `/${locale}/packages${preview ? "?preview=draft" : ""}` : `/${locale}/contact`}>{items.length ? t.reset : t.contact}</ButtonLink></EmptyState></div>}
       {ownerReviewEnabled() && !preview && <Link href={`/${locale}/packages?preview=draft`} className="mt-6 inline-flex min-h-11 items-center text-sm text-ocean underline">{t.previewLink}</Link>}
     </Container></section>

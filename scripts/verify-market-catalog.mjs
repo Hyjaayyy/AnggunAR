@@ -18,18 +18,19 @@ assert.equal(tourPackages.length, 9); assert.equal(new Set(tourPackages.map(p =>
 assert.equal(tourPackages.filter(p => p.demo).length, 3);
 const prodLib = prod("src/lib/tour-packages.ts"), devLib = dev("src/lib/tour-packages.ts");
 const devAccess = await dev("src/lib/owner-review.ts").packageReviewAccess({ preview: "draft" });
-assert.equal(prodLib.getPackages(true).length, 0); assert.equal(devLib.getPackages().length, 0); assert.equal(devLib.getPackages(true).length, 0); assert.equal(devLib.getPackages(devAccess).length, 9);
+assert.equal(prodLib.getPackages(true).length, 6); assert.equal(devLib.getPackages().length, 6); assert.equal(devLib.getPackages(true).length, 6); assert.equal(devLib.getPackages(devAccess).length, 9);
 const detail = dev("src/app/[locale]/packages/[slug]/page.tsx").default;
 const card = dev("src/components/packages/tour-package-card.tsx").TourPackageCard;
 for (const [slug, amount, days, nights] of expected) {
   const item = tourPackages.find(p => p.slug === slug);
-  assert.ok(item); assert.equal(item.status, "draft"); assert.equal(item.demo, false);
+  assert.ok(item); assert.equal(item.status, "offered"); assert.equal(item.demo, false);
   assert.equal(item.price, null); assert.equal(item.included, null); assert.equal(item.excluded, null);
   assert.equal(item.planning.verification, "unverified"); assert.equal(item.planning.indicativePricePerPerson, amount);
   assert.equal(item.planning.participantBasis, null); assert.equal(item.durationDays, days); assert.equal(item.planning.durationNights, nights);
   assert.equal(item.itinerary.length, days); assert.ok(item.images.every(image => image.src === null));
   assert.ok(item.planning.sourceUrls.length >= 2 && item.planning.sourceUrls.every(url => url.startsWith("https://")));
-  assert.equal(prodLib.getPackage(slug, true), undefined); assert.equal(devLib.getPackage(slug), undefined);
+  assert.equal(prodLib.getPackage(slug, true)?.slug, slug); assert.equal(devLib.getPackage(slug)?.slug, slug);
+  assert.equal(prodLib.getBookingPackage(slug), undefined);
   for (const locale of ["id", "en"]) {
     assert.ok(item.content[locale].description.length > 70);
     assert.ok(item.itinerary.every(day => day.title[locale] && day.activities[locale].length));
@@ -42,8 +43,8 @@ for (const [slug, amount, days, nights] of expected) {
     for (const word of locale === "id" ? ["tanggal", "jumlah peserta", "penawaran aktual"] : ["dates", "participant", "quotation"]) assert.ok(message.includes(word));
     const renderedCard = card({ item, locale, preview: true });
     const priceText = text(renderedCard);
-    assert.ok(priceText.includes(locale === "id" ? "Estimasi harga pasar" : "Market price estimate"));
-    await assert.rejects(() => detail({ params: Promise.resolve({ locale, slug }), searchParams: Promise.resolve({}) }), /NEXT_HTTP_ERROR_FALLBACK;404/);
+    assert.ok(priceText.includes(locale === "id" ? "Estimasi mulai dari" : "Estimated from"));
+    assert.ok(await detail({ params: Promise.resolve({ locale, slug }), searchParams: Promise.resolve({}) }));
   }
 }
 console.log("PASS 6 unverified market concepts, 3 preserved demos, ID/EN itinerary/estimate labels, 12 actual detail quote CTAs, no official price/inclusions, production/draft booking isolation");
@@ -52,13 +53,13 @@ if (process.env.TEST_BASE_URL) {
   for (const locale of ["id", "en"]) for (const [slug] of expected) {
     for (const query of ["", "?preview=draft"]) {
       const response = await fetch(`${process.env.TEST_BASE_URL}/${locale}/packages/${slug}${query}`);
-      assert.equal(response.status, preview && query ? 200 : 404);
+      assert.equal(response.status, 200);
       if (response.status === 200) {
         const html = await response.text();
-        assert.ok(html.includes(locale === "id" ? "Estimasi harga pasar — belum final" : "Market price estimate — not final"));
+        assert.ok(html.includes(locale === "id" ? "Estimasi mulai dari - belum final" : "Estimated from - not final"));
         assert.ok(html.includes(locale === "id" ? "Minta Penawaran" : "Request a Quote"));
         assert.ok(!html.includes('application/ld+json')); assert.ok(!html.includes('/booking?package='));
-        assert.ok(html.includes('content="noindex, nofollow"'));
+        if (preview && query) assert.ok(html.includes('content="noindex, nofollow"'));
       }
     }
     const booking = await fetch(`${process.env.TEST_BASE_URL}/${locale}/booking?package=${slug}`).then(r => r.text());

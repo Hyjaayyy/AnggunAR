@@ -53,9 +53,7 @@ Tiga objek `images` independen berisi `src`, `alt: { id, en }`, dan `position`, 
 
 ## Preview dan publikasi
 
-Jalankan `npm run dev`, buka `/id/packages?preview=draft` atau `/en/packages?preview=draft`, lalu klik detail. Query preview dibawa ke detail dan language switcher. Semua draft diberi label DEMO/DRAFT; CTA inquiry draft tidak tersedia.
-
-Preview hanya berlaku ketika `NODE_ENV === "development"`, diperiksa di proxy dan modul server. `next build`/`next start` tidak dapat membuka draft meskipun query ditambahkan secara manual. Preview development bukan kontrol akses pengguna: jangan mengekspos dev server ke publik. Foto di folder `public` adalah aset publik; jangan menaruh materi rahasia dalam draft/public.
+Draft internal memerlukan autentikasi owner-review (Basic Auth), konfigurasi OWNER_REVIEW yang valid, dan query `preview=draft`. Berlaku pada development lokal atau hosted preview dengan HTTPS; production publik tidak dapat membuka draft. Lihat `src/lib/owner-review.ts` untuk kebijakan yang berlaku. Query saja tidak memberikan akses. Aset pada folder public tetap publik; jangan menyimpan materi rahasia di sana.
 
 Setelah konten resmi disetujui, pastikan `demo: false`, lalu ubah objek paket itu menjadi `status: "published"`. Paket demo tetap tidak tampil publik meskipun statusnya keliru diubah. Rebuild production; paket akan otomatis tampil pada katalog, detail dan hingga tiga kartu homepage. Mengubah kembali ke draft menarik paket dari ketiganya. Tidak ada paket resmi published pada akhir implementasi ini.
 
@@ -63,12 +61,26 @@ Setelah konten resmi disetujui, pastikan `demo: false`, lalu ubah objek paket it
 
 Form GET memakai `q`, `destination`, `category`, `duration`. Nilai lokasi/kategori berupa ID stabil, durasi berupa jumlah hari. Opsi berasal dari paket yang boleh terlihat; filter tanpa data tidak ditampilkan. Kata kunci dicari pada nama paket sesuai locale, maksimal 200 karakter. Language switcher membawa query filter yang dikenal; kata kunci sama dapat menghasilkan hasil berbeda bila nama diterjemahkan. Query tidak dikenal tidak diteruskan saat ganti bahasa.
 
-CTA paket terbit menuju `/{locale}/booking?package=[slug]`. Halaman memeriksa ulang bahwa paket published dan bukan demo sebelum menampilkan namanya. Tidak ada form, pengumpulan data, pengiriman inquiry, atau konfirmasi booking.
+CTA detail paket membuka WhatsApp resmi. CTA konsep offered meminta penawaran aktual. Halaman booking memeriksa ulang bahwa paket published, bukan demo, dan tanpa metadata perencanaan sebelum menampilkan konteksnya. Tidak ada form, pengumpulan data, pengiriman inquiry, atau konfirmasi booking.
 
 ## Validasi lokal
 
 Jalankan `npm run lint`, `npm run typecheck`, `npm run build`. Jalankan production di terminal terpisah, lalu `node scripts/verify-routes.mjs` dan `node scripts/verify-packages.mjs`. `TEST_BASE_URL` dapat menunjuk port lain. Untuk server dev, set `TEST_PREVIEW=1` ketika menjalankan `verify-packages.mjs`.
 
-Browser: Chrome headless terpisah dengan profil di `artifacts/`, remote debugging hanya lokal, lalu `node scripts/verify-packages-browser.mjs`; atur `BROWSER_DEBUG_URL` sesuai port dan `TEST_BASE_URL` ke server target. Set `TEST_PREVIEW=1` hanya untuk dev. Script HTTP saat ini menguji baseline tanpa paket resmi; sesuaikan ekspektasi empty state saat paket resmi diterbitkan. Fixture published pada pengujian logika tetap terisolasi dan tidak masuk katalog.
+Browser: Chrome headless terpisah dengan profil di `artifacts/`, remote debugging hanya lokal, lalu `node scripts/verify-packages-browser.mjs`; atur `BROWSER_DEBUG_URL` sesuai port dan `TEST_BASE_URL` ke server target. Set `TEST_PREVIEW=1` hanya untuk dev. Script HTTP memeriksa enam penawaran awal publik serta isolasi draft internal. Fixture published pada pengujian logika tetap terisolasi dan tidak masuk katalog.
 
 `scripts/verify-packages-image.mjs` khusus server development: memakai WebP sintetis sementara untuk menguji Next Image. Penulisan eksklusif tidak menimpa foto yang sudah ada; file yang dibuat sendiri dihapus pada finally. Jangan menjalankannya terhadap production karena preview memang tidak tersedia di sana.
+
+
+## Katalog penawaran awal
+
+Enam konsep pasar memakai status `offered`, dapat diakses publik di katalog dan detail ID/EN, dengan label harga estimasi dan fasilitas perlu konfirmasi. Harga resmi, termasuk dan tidak termasuk tetap null. Gambar yang belum tersedia tetap placeholder. CTA memakai kontak WhatsApp resmi dari konfigurasi bisnis, dengan permintaan penawaran aktual; tidak menjamin ketersediaan.
+
+Status `draft` tetap memerlukan autentikasi owner-review yang sudah ada; jangan mengubah semua draft menjadi publik. `getBookingPackage` hanya menerima published non-demo tanpa metadata perencanaan, terpisah dari resolver katalog `getPackage`. Tidak ada booking otomatis atau pembayaran.
+
+
+## Carousel mobile
+
+Katalog dan tiga kartu pilihan homepage memakai `PackageList`: CSS scroll-snap horizontal di bawah 768px, grid lama pada tablet/desktop. Kartu tetap Server Components, dengan pembungkus client ringan untuk posisi scroll dan keyboard ArrowLeft/ArrowRight/Home/End. Indikator mengikuti scroll dan resize; reduced motion memakai scroll instan. Tidak ada autoplay atau dependency baru.
+
+Validasi browser: `TEST_BASE_URL` menunjuk production lokal dan `BROWSER_DEBUG_URL` menunjuk Chrome debugging lokal, lalu jalankan `node scripts/verify-package-carousel.mjs`. Tes mencakup 320/375/390/430/768/1024/1440px, ID/EN, katalog/homepage, touch emulasi, keyboard dan overflow. Emulasi Chromium tidak menggantikan pengujian perangkat fisik iPhone/Safari.

@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
   if (reviewRequested && ownerReviewEnabled() && !reviewAccess) {
     return new NextResponse("Owner review authorization required.", { status: 401, headers: { "WWW-Authenticate": 'Basic realm="Owner review", charset="UTF-8"', "Cache-Control": "private, no-store", "X-Robots-Tag": "noindex, nofollow", "Vary": "Authorization" } });
   }
-  const packageDetail = segments.length === 3 && slug === "packages" && tourPackages.some((item) => item.slug === segments[2] && ((item.status === "published" && !item.demo) || !!reviewAccess));
+  const packageDetail = segments.length === 3 && slug === "packages" && tourPackages.some((item) => item.slug === segments[2] && (((item.status === "published" || item.status === "offered") && !item.demo) || !!reviewAccess));
   const destinationDetail = segments.length === 3 && slug === "destinations" && destinations.some((item) => item.slug === segments[2] && item.status === "published" && item.sources.length > 0);
   const available = isLocale(locale) && (segments.length === 1 || (segments.length === 2 && isPageSlug(slug)) || packageDetail || destinationDetail);
   if (!available) {

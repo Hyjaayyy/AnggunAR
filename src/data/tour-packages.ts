@@ -80,7 +80,7 @@ const marketConcepts = [
 
 const pendingPhoto = (): PackageImage => ({ src: null, position: "50% 50%", alt: { id: "", en: "" } });
 const marketDraftPackages: readonly TourPackage[] = marketConcepts.map((concept): TourPackage => ({
-  slug: concept.slug, status: "draft", demo: false, price: null,
+  slug: concept.slug, status: "offered", demo: false, price: null,
   planning: { verification: "unverified", indicativePricePerPerson: concept.amount, participantBasis: null, durationNights: concept.nights, researchedOn: "2026-10-22", sourceUrls: concept.sources },
   durationDays: concept.days,
   location: { id: concept.location, label: { id: concept.location === "batam-bintan" ? "Batam & Bintan" : concept.location === "bintan" ? "Bintan" : "Batam", en: concept.location === "batam-bintan" ? "Batam & Bintan" : concept.location === "bintan" ? "Bintan" : "Batam" } },
